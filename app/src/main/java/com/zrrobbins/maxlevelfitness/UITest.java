@@ -1,15 +1,34 @@
 package com.zrrobbins.maxlevelfitness;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import android.app.ExpandableListActivity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
+import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 
-import java.util.ArrayList;
+import android.app.Activity;
+import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.Menu;
+import android.view.View;
+import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
+import android.widget.Toast;
 
-public class UITest extends ExpandableListActivity{
+public class UITest extends Activity{
+
+    List<String> groupList;
+    List<String> childList;
+    Map<String, List<String>> laptopCollection;
+    ExpandableListView expListView;
 
     private ArrayList<String> parentItems = new ArrayList<String>();
     private ArrayList<Object> childItems = new ArrayList<Object>();
@@ -17,58 +36,95 @@ public class UITest extends ExpandableListActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.landing_page);
-        ExpandableListView list1 = (ExpandableListView)findViewById(R.id.list);
-        list1.setDividerHeight(4);
-        list1.setGroupIndicator(null);
-        list1.setClickable(true);
 
-        setGroupParents();
-        setChildData();
+        createGroupList();
 
-        CustomExpandableAdapter adapter = new CustomExpandableAdapter(parentItems, childItems);
-        adapter.setInflater((LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE), this);
-        list1.setAdapter(adapter);
-        list1.setOnChildClickListener(this);
+        createCollection();
+
+        expListView = (ExpandableListView) findViewById(R.id.laptop_list);
+        final ExpandableListAdapter expListAdapter = new CustomExpandableAdapter(
+                this, groupList, laptopCollection);
+        expListView.setAdapter(expListAdapter);
+
+        //setGroupIndicatorToRight();
+
+        expListView.setOnChildClickListener(new OnChildClickListener() {
+
+            public boolean onChildClick(ExpandableListView parent, View v,
+                                        int groupPosition, int childPosition, long id) {
+                final String selected = (String) expListAdapter.getChild(
+                        groupPosition, childPosition);
+                Toast.makeText(getBaseContext(), selected, Toast.LENGTH_LONG)
+                        .show();
+
+                return true;
+            }
+        });
     }
 
-    public void setGroupParents() {
-        parentItems.add("Android");
-        parentItems.add("Core Java");
-        parentItems.add("Desktop Java");
-        parentItems.add("Enterprise Java");
+    private void createGroupList() {
+        groupList = new ArrayList<String>();
+        groupList.add("HP");
+        groupList.add("Dell");
+        groupList.add("Lenovo");
+        groupList.add("Sony");
+        groupList.add("HCL");
+        groupList.add("Samsung");
     }
 
-    public void setChildData() {
+    private void createCollection() {
+        // preparing laptops collection(child)
+        String[] hpModels = { "HP Pavilion G6-2014TX", "ProBook HP 4540",
+                "HP Envy 4-1025TX" };
+        String[] hclModels = { "HCL S2101", "HCL L2102", "HCL V2002" };
+        String[] lenovoModels = { "IdeaPad Z Series", "Essential G Series",
+                "ThinkPad X Series", "Ideapad Z Series" };
+        String[] sonyModels = { "VAIO E Series", "VAIO Z Series",
+                "VAIO S Series", "VAIO YB Series" };
+        String[] dellModels = { "Inspiron", "Vostro", "XPS" };
+        String[] samsungModels = { "NP Series", "Series 5", "SF Series" };
 
-        // Android
-        ArrayList<String> child = new ArrayList<String>();
-        child.add("Core");
-        child.add("Games");
-        childItems.add(child);
+        laptopCollection = new LinkedHashMap<String, List<String>>();
 
-        // Core Java
-        child = new ArrayList<String>();
-        child.add("Apache");
-        child.add("Applet");
-        child.add("AspectJ");
-        child.add("Beans");
-        child.add("Crypto");
-        childItems.add(child);
+        for (String laptop : groupList) {
+            if (laptop.equals("HP")) {
+                loadChild(hpModels);
+            } else if (laptop.equals("Dell"))
+                loadChild(dellModels);
+            else if (laptop.equals("Sony"))
+                loadChild(sonyModels);
+            else if (laptop.equals("HCL"))
+                loadChild(hclModels);
+            else if (laptop.equals("Samsung"))
+                loadChild(samsungModels);
+            else
+                loadChild(lenovoModels);
 
-        // Desktop Java
-        child = new ArrayList<String>();
-        child.add("Accessibility");
-        child.add("AWT");
-        child.add("ImageIO");
-        child.add("Print");
-        childItems.add(child);
+            laptopCollection.put(laptop, childList);
+        }
+    }
 
-        // Enterprise Java
-        child = new ArrayList<String>();
-        child.add("EJB3");
-        child.add("GWT");
-        child.add("Hibernate");
-        child.add("JSP");
-        childItems.add(child);
+    private void loadChild(String[] laptopModels) {
+        childList = new ArrayList<String>();
+        for (String model : laptopModels)
+            childList.add(model);
+    }
+
+    private void setGroupIndicatorToRight() {
+        /* Get the screen width */
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels;
+
+        expListView.setIndicatorBounds(width - getDipsFromPixel(35), width
+                - getDipsFromPixel(5));
+    }
+
+    // Convert pixel to dip
+    public int getDipsFromPixel(float pixels) {
+        // Get the screen's density scale
+        final float scale = getResources().getDisplayMetrics().density;
+        // Convert the dps to pixels, based on density scale
+        return (int) (pixels * scale + 0.5f);
     }
 }

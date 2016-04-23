@@ -5,121 +5,123 @@ package com.zrrobbins.maxlevelfitness;
  */
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckedTextView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class CustomExpandableAdapter extends BaseExpandableListAdapter {
+    private Activity context;
+    private Map<String, List<String>> laptopCollections;
+    private List<String> laptops;
 
-    private Activity activity;
-    private ArrayList<Object> childtems;
-    private LayoutInflater inflater;
-    private ArrayList<String> parentItems, child;
-
-    public CustomExpandableAdapter(ArrayList<String> parents, ArrayList<Object> childern) {
-        this.parentItems = parents;
-        this.childtems = childern;
+    public CustomExpandableAdapter(Activity context, List<String> laptops,
+                                 Map<String, List<String>> laptopCollections) {
+        this.context = context;
+        this.laptopCollections = laptopCollections;
+        this.laptops = laptops;
     }
 
-    public void setInflater(LayoutInflater inflater, Activity activity) {
-        this.inflater = inflater;
-        this.activity = activity;
+    public Object getChild(int groupPosition, int childPosition) {
+        return laptopCollections.get(laptops.get(groupPosition)).get(childPosition);
     }
 
-    @Override
-    public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public long getChildId(int groupPosition, int childPosition) {
+        return childPosition;
+    }
 
-        child = (ArrayList<String>) childtems.get(groupPosition);
 
-        TextView textView = null;
+    public View getChildView(final int groupPosition, final int childPosition,
+                             boolean isLastChild, View convertView, ViewGroup parent) {
+        final String laptop = (String) getChild(groupPosition, childPosition);
+        LayoutInflater inflater = context.getLayoutInflater();
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.parent_group, null);
+            convertView = inflater.inflate(R.layout.child_item, null);
         }
 
-        textView = (TextView) convertView.findViewById(R.id.textView1);
-        textView.setText(child.get(childPosition));
+        TextView item = (TextView) convertView.findViewById(R.id.laptop);
 
-        convertView.setOnClickListener(new OnClickListener() {
+        ImageView delete = (ImageView) convertView.findViewById(R.id.delete);
+        delete.setOnClickListener(new OnClickListener() {
 
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(activity, child.get(childPosition),
-                        Toast.LENGTH_SHORT).show();
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage("Do you want to remove?");
+                builder.setCancelable(false);
+                builder.setPositiveButton("Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                List<String> child =
+                                        laptopCollections.get(laptops.get(groupPosition));
+                                child.remove(childPosition);
+                                notifyDataSetChanged();
+                            }
+                        });
+                builder.setNegativeButton("No",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
             }
         });
 
+        item.setText(laptop);
         return convertView;
     }
 
-    @Override
-    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.list_row, null);
-        }
-
-        ((CheckedTextView) convertView).setText(parentItems.get(groupPosition));
-        ((CheckedTextView) convertView).setChecked(isExpanded);
-
-        return convertView;
-    }
-
-    @Override
-    public Object getChild(int groupPosition, int childPosition) {
-        return null;
-    }
-
-    @Override
-    public long getChildId(int groupPosition, int childPosition) {
-        return 0;
-    }
-
-    @Override
     public int getChildrenCount(int groupPosition) {
-        return ((ArrayList<String>) childtems.get(groupPosition)).size();
+        return laptopCollections.get(laptops.get(groupPosition)).size();
     }
 
-    @Override
     public Object getGroup(int groupPosition) {
-        return null;
+        return laptops.get(groupPosition);
     }
 
-    @Override
     public int getGroupCount() {
-        return parentItems.size();
+        return laptops.size();
     }
 
-    @Override
-    public void onGroupCollapsed(int groupPosition) {
-        super.onGroupCollapsed(groupPosition);
-    }
-
-    @Override
-    public void onGroupExpanded(int groupPosition) {
-        super.onGroupExpanded(groupPosition);
-    }
-
-    @Override
     public long getGroupId(int groupPosition) {
-        return 0;
+        return groupPosition;
     }
 
-    @Override
+    public View getGroupView(int groupPosition, boolean isExpanded,
+                             View convertView, ViewGroup parent) {
+        String laptopName = (String) getGroup(groupPosition);
+        if (convertView == null) {
+            LayoutInflater infalInflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = infalInflater.inflate(R.layout.group_item,
+                    null);
+        }
+        TextView item = (TextView) convertView.findViewById(R.id.laptop);
+        item.setTypeface(null, Typeface.BOLD);
+        item.setText(laptopName);
+        return convertView;
+    }
+
     public boolean hasStableIds() {
-        return false;
+        return true;
     }
 
-    @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return false;
+        return true;
     }
-
 }
