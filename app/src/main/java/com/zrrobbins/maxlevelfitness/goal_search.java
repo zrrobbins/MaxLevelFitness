@@ -113,7 +113,7 @@ public class goal_search extends Fragment {
         goalList = new ArrayList<Goal>();
         goalList.add(new Goal("Running Goal 1", GoalType.RUNNING));
         goalList.add(new Goal("Walking Goal 1", GoalType.WALKING));
-        goalList.add(new Goal("Gym Visits Goal 1", GoalType.GYM_VISTS));
+        goalList.add(new Goal("Gym Visits Goal 1", GoalType.GYM_VISITS));
         goalList.add(new Goal("Running Goal 2", GoalType.RUNNING));
     }
 
