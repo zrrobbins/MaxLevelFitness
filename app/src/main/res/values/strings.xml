@@ -8,4 +8,6 @@
     <string name="membership">Member Since</string>
     <string name="stars">Total Stars</string>
     <string name="badges">Badges</string>
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
