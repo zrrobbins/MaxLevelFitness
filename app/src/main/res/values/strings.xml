@@ -3,7 +3,11 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-
+    <string name="leaderboard_my_avatar">myAvatar</string>
+    <string name="username">Username</string>
+    <string name="membership">Member Since</string>
+    <string name="stars">Total Stars</string>
+    <string name="badges">Badges</string>
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
