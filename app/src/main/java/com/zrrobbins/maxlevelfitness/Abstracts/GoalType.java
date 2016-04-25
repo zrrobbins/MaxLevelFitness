@@ -1,4 +1,4 @@
-package com.zrrobbins.maxlevelfitness;
+package com.zrrobbins.maxlevelfitness.Abstracts;
 
 /**
  * Created by zrrobbins on 4/24/16.

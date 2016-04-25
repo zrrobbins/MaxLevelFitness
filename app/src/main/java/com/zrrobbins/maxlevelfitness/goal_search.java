@@ -13,8 +13,10 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.zrrobbins.maxlevelfitness.Abstracts.Goal;
+import com.zrrobbins.maxlevelfitness.Abstracts.GoalType;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 /**
@@ -111,16 +113,17 @@ public class goal_search extends Fragment {
 
     private void fetchGoals() {
         goalList = new ArrayList<Goal>();
+        /*
         goalList.add(new Goal("Running Goal 1", GoalType.RUNNING));
         goalList.add(new Goal("Walking Goal 1", GoalType.WALKING));
         goalList.add(new Goal("Gym Visits Goal 1", GoalType.GYM_VISITS));
-        goalList.add(new Goal("Running Goal 2", GoalType.RUNNING));
+        goalList.add(new Goal("Running Goal 2", GoalType.RUNNING));*/
     }
 
     private ArrayList<String> fetchGoalNames() {
         ArrayList<String> goalNameList = new ArrayList<String>();
         for(Goal g : goalList) {
-            goalNameList.add(g.getGoalName());
+            goalNameList.add(Integer.toString(g.getGoalID()));
         }
         return goalNameList;
     }

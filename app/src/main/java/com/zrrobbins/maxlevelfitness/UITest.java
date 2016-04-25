@@ -5,21 +5,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.app.ExpandableListActivity;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 
 import android.app.Activity;
-import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.view.Menu;
 import android.view.View;
-import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.Toast;
 
