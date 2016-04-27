@@ -11,15 +11,23 @@ import java.util.ArrayList;
 public class RunningGoal extends Goal {
 
     private Distance distance;
-    private int Speed;
+    private int speed;
     private ArrayList<RunningSession> sessions;
 
-    public RunningGoal(int goalName, GoalType goalType, int frequency) {
-        super(goalName, goalType, frequency);
+    public RunningGoal(int goalID, GoalType goalType, int frequency, Distance distance, int speed) {
+        super(goalID, goalType, frequency);
+        this.distance = distance;
+        this.speed = speed;
     }
 
     public void addRunningSession(RunningSession sess)
     {
         sessions.add(sess);
     }
+
+    public Distance getDistance(){ return distance;}
+
+    public int getSpeed() {return speed; }
+
+
 }

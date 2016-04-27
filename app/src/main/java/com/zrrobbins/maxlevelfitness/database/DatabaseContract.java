@@ -18,7 +18,8 @@ public class DatabaseContract {
             public static final String COLUMN_NAME_GOAL_ID = "runGoalID";
             public static final String COLUMN_NAME_GOAL_TYPE = "goalType";
             public static final String COLUMN_NAME_GOAL_FREQUENCY = "goalFrequency";
-            public static final String COLUMN_NAME_GOAL_DISTANCE = "goalDistance";
+            public static final String COLUMN_NAME_GOAL_DISTANCE_LENGTH = "goalDistanceLength";
+            public static final String COLUMN_NAME_GOAL_DISTANCE_UNITS = "goalDistanceUnits";
             public static final String COLUMN_NAME_GOAL_SPEED = "goalSpeed";
         }
 

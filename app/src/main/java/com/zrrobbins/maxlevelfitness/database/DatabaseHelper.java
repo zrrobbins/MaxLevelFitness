@@ -1,8 +1,19 @@
 package com.zrrobbins.maxlevelfitness.database;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import com.zrrobbins.maxlevelfitness.Abstracts.GoalType;
+import com.zrrobbins.maxlevelfitness.Running.Distance;
+import com.zrrobbins.maxlevelfitness.Running.RunningGoal;
+import com.zrrobbins.maxlevelfitness.Running.RunningSession;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Alexi on 4/24/2016.
@@ -13,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String LOG = "DatabaseHelper";
 
     // Database Version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Database Name
     private static final String DATABASE_NAME = "RunningDatabase";
@@ -27,7 +38,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static String CREATE_GOAL_TABLE = "create table "
             + GOAL_TABLE + " ("
             + DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_ID+ " integer primary key autoincrement, "
-            + DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_DISTANCE + " text not null, "
+            + DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_DISTANCE_LENGTH + " integer not null,"
+            + DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_DISTANCE_UNITS + " text not null, "
             + DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_FREQUENCY + " integer not null, "
             + DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_SPEED + " integer not null,"
             + DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_TYPE + " text not null)";
@@ -60,11 +72,72 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
+        // creating required tables
+        db.execSQL(CREATE_GOAL_TABLE);
+        db.execSQL(SESSION_TABLE_CREATE);
+        db.execSQL(PAIR_TABLE_CREATE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // on upgrade drop older tables
+        db.execSQL("DROP TABLE IF EXISTS " + GOAL_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + SESSION_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + PAIR_TABLE);
 
+        // create new tables
+        onCreate(db);
+    }
+
+    public void addRunningGoal(RunningGoal goal)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_DISTANCE_UNITS,
+                goal.getDistance().getUnits());
+        values.put(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_DISTANCE_LENGTH,
+                goal.getDistance().getLength());
+        values.put(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_FREQUENCY,
+                goal.getGoalFrequency());
+        values.put(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_SPEED,
+                goal.getSpeed());
+        values.put(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_TYPE,
+                goal.getGoalType().toString());
+
+        // insert row
+        long todo_id = db.insert(GOAL_TABLE, null, values);
+    }
+
+    public List<RunningGoal> retrieveAllRunningGoals()
+    {
+        List<RunningGoal> RunningGoals = new ArrayList<RunningGoal>();
+        String selectQuery = "SELECT  * FROM " + GOAL_TABLE;
+
+        Log.e(LOG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                int rgID = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_ID)));
+                GoalType rgType  = GoalType.valueOf(c.getString((
+                        c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_TYPE))));
+                int rgFrequency = c.getInt((
+                        c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_FREQUENCY)));
+                int distanceLength = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_DISTANCE_LENGTH)));
+                String distanceUnits = c.getString((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_DISTANCE_UNITS)));
+                Distance newDist = new Distance( distanceLength, distanceUnits);
+                int rgSpeed = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_SPEED)));
+                RunningGoal rg = new RunningGoal(rgID, rgType, rgFrequency, newDist, rgSpeed);
+
+                //TODO add sessions
+                RunningGoals.add(rg);
+            } while (c.moveToNext());
+        }
+
+        return RunningGoals;
     }
 }
