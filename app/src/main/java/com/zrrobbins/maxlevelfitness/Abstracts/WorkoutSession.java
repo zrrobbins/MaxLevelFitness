@@ -11,4 +11,8 @@ public abstract class WorkoutSession {
     {
         return endTime-startTime;
     }
+
+    public double getStartTime() { return startTime;}
+
+    public double getEndTime() { return endTime; }
 }

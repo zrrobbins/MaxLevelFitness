@@ -109,6 +109,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long todo_id = db.insert(GOAL_TABLE, null, values);
     }
 
+    public void addRunningSession(RunningSession sess)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_PARENT_GOAL_ID,
+                sess.getRunningGoal().getGoalID());
+        values.put(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_START_TIME,
+                sess.getStartTime());
+        values.put(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_END_TIME,
+                sess.getEndTime());
+        // insert row
+        long todo_id = db.insert(SESSION_TABLE, null, values);
+    }
+
     public List<RunningGoal> retrieveAllRunningGoals()
     {
         List<RunningGoal> RunningGoals = new ArrayList<RunningGoal>();
@@ -138,6 +154,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             } while (c.moveToNext());
         }
 
+
         return RunningGoals;
+    }
+
+    public List<RunningGoal> retrieveAllRunningSessions()
+    {
+        List<RunningGoal> RunningSessions = new ArrayList<RunningGoal>();
+        String selectQuery = "SELECT  * FROM " + GOAL_TABLE;
+
+        Log.e(LOG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+
+                //RunningSession rs = new RunningSession();
+
+                //TODO add sessions
+                //RunningSessions.add(rg);
+            } while (c.moveToNext());
+        }
+
+
+        return RunningSessions;
     }
 }

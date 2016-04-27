@@ -19,6 +19,8 @@ public class RunningSession extends WorkoutSession {
         return 0;
     }
 
+    public RunningGoal getRunningGoal() {return runningGoal;}
+
     public int getTopSpeed()
     {
         return 0;
