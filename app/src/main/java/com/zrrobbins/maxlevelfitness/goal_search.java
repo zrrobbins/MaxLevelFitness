@@ -3,7 +3,7 @@ package com.zrrobbins.maxlevelfitness;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -39,6 +39,7 @@ public class goal_search extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    public static final String ARG_PAGE = "page";
 
     private ListView lv;
     ArrayAdapter<String> adapter;
@@ -64,6 +65,18 @@ public class goal_search extends Fragment {
         return fragment;
     }
 */
+
+    public static goal_search create(int pageNumber)
+    {
+
+        goal_search fragment = new goal_search();
+        Bundle args = new Bundle();
+        System.out.println("page number: " + pageNumber);
+        args.putInt(ARG_PAGE, pageNumber);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public goal_search() {
         // Required empty public constructor
     }
@@ -71,11 +84,8 @@ public class goal_search extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //if (getArguments() != null) {
-         //   mParam1 = getArguments().getString(ARG_PARAM1);
-       //     mParam2 = getArguments().getString(ARG_PARAM2);
-       // }
 
+        /*
         fetchGoals();
 
         ArrayList<String> goalNames = fetchGoalNames();
@@ -108,6 +118,7 @@ public class goal_search extends Fragment {
                 // TODO Auto-generated method stub
             }
         });
+        */
     }
 
 
@@ -133,7 +144,42 @@ public class goal_search extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_goal_search, container, false);
+        View inflated =  inflater.inflate(R.layout.fragment_goal_search, container, false);
+
+        fetchGoals();
+
+        ArrayList<String> goalNames = fetchGoalNames();
+
+        lv = (ListView) inflated.findViewById(R.id.goalListView);
+        searchInput = (EditText) inflated.findViewById(R.id.searchFragmentSearchBar);
+
+        // Add items to list view
+        adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),
+                R.layout.group_item, R.id.goal_name, goalNames);
+        lv.setAdapter(adapter);
+
+        searchInput.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
+                // When user changed the Text
+                goal_search.this.adapter.getFilter().filter(cs);
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                          int arg3) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                // TODO Auto-generated method stub
+            }
+        });
+
+        return inflated;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -149,8 +195,7 @@ public class goal_search extends Fragment {
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+
         }
     }
 

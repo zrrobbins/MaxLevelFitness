@@ -1,6 +1,11 @@
 package com.zrrobbins.maxlevelfitness;
 
 import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,19 +13,43 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.zrrobbins.maxlevelfitness.ViewPager.ScreenSlidePageFragment;
+
 public class MainActivity extends AppCompatActivity {
+
+    private ViewPager mPager;
+
+    private PagerAdapter mPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button button1 = (Button)findViewById(R.id.testListBut);
-        button1.setOnClickListener(new View.OnClickListener() {
+        Button testExpList = (Button)findViewById(R.id.testListBut);
+        testExpList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 testListUI(v);
             }
         });
+
+        // Instantiate a ViewPager and a PagerAdapter.
+        mPager = (ViewPager) findViewById(R.id.pager);
+        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        mPager.setAdapter(mPagerAdapter);
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mPager.getCurrentItem() == 0) {
+            // If the user is currently looking at the first step, allow the system to handle the
+            // Back button. This calls finish() on this activity and pops the back stack.
+            super.onBackPressed();
+        } else {
+            // Otherwise, select the previous step.
+            mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+        }
     }
 
     @Override
@@ -50,4 +79,27 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, UITest.class);
         startActivity(intent);
     }
+
+    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+        public ScreenSlidePagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    goal_search newGoalSearch =  goal_search.create(0);
+                    return newGoalSearch;
+                default:
+                    return new ScreenSlidePageFragment();
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return 5;
+        }
+    }
+
 }

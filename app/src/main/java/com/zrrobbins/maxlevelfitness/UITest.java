@@ -22,8 +22,6 @@ public class UITest extends Activity{
     Map<String, List<String>> laptopCollection;
     ExpandableListView expListView;
 
-    private ArrayList<String> parentItems = new ArrayList<String>();
-    private ArrayList<Object> childItems = new ArrayList<Object>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
