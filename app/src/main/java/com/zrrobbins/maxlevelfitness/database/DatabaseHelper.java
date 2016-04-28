@@ -125,6 +125,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long todo_id = db.insert(SESSION_TABLE, null, values);
     }
 
+    //TODO get by id
+
     public List<RunningGoal> retrieveAllRunningGoals()
     {
         List<RunningGoal> RunningGoals = new ArrayList<RunningGoal>();
