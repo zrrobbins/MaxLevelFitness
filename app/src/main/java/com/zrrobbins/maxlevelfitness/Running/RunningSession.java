@@ -7,7 +7,7 @@ import com.zrrobbins.maxlevelfitness.Abstracts.WorkoutSession;
  */
 public class RunningSession extends WorkoutSession {
     private RunningGoal runningGoal;
-    private DistSpeedPair[] sections;
+    private DistSpeedPair distSpeed;
 
     public RunningSession(RunningGoal runningGoal)
     {
@@ -20,16 +20,6 @@ public class RunningSession extends WorkoutSession {
     }
 
     public RunningGoal getRunningGoal() {return runningGoal;}
-
-    public int getTopSpeed()
-    {
-        return 0;
-    }
-
-    public int getSlowestSpeed()
-    {
-        return 0;
-    }
 
     public Distance getTotalDistance()
     {
