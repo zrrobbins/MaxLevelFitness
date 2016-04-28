@@ -51,7 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_START_TIME + " integer not null, "
             + DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_END_TIME + " integer not null,"
             + " FOREIGN KEY ("+DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_PARENT_GOAL_ID+") REFERENCES "+
-                GOAL_TABLE+"("+DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_ID+"));";
+            GOAL_TABLE+"("+DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_ID+"));";
 
     //DistSpeedPairs Table Create String
     private static final String PAIR_TABLE_CREATE = "create table "
@@ -87,6 +87,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // create new tables
         onCreate(db);
+    }
+
+    public void dropAllTables(SQLiteDatabase db)
+    {
+        db.execSQL("DROP TABLE IF EXISTS " + GOAL_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + SESSION_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + PAIR_TABLE);
     }
 
     public void addRunningGoal(RunningGoal goal)
@@ -125,14 +132,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long todo_id = db.insert(SESSION_TABLE, null, values);
     }
 
-    //TODO get by id
+    public RunningGoal getRunningGoal(long goalID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT  * FROM " + GOAL_TABLE + " WHERE "
+                + DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_ID + " = " + goalID;
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c != null)
+            c.moveToFirst();
+
+        int rgID = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_ID)));
+        GoalType rgType  = GoalType.valueOf(c.getString((
+                c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_TYPE))));
+        int rgFrequency = c.getInt((
+                c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_FREQUENCY)));
+        int distanceLength = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_DISTANCE_LENGTH)));
+        String distanceUnits = c.getString((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_DISTANCE_UNITS)));
+        Distance newDist = new Distance( distanceLength, distanceUnits);
+        int rgSpeed = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_SPEED)));
+        RunningGoal rg = new RunningGoal(rgID, rgType, rgFrequency, newDist, rgSpeed);
+
+        return rg;
+    }
 
     public List<RunningGoal> retrieveAllRunningGoals()
     {
         List<RunningGoal> RunningGoals = new ArrayList<RunningGoal>();
         String selectQuery = "SELECT  * FROM " + GOAL_TABLE;
-
-        Log.e(LOG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
@@ -160,9 +190,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return RunningGoals;
     }
 
-    public List<RunningGoal> retrieveAllRunningSessions()
+    public int getNewRunningGoalID()
     {
-        List<RunningGoal> RunningSessions = new ArrayList<RunningGoal>();
+        List<RunningGoal> rgList = retrieveAllRunningGoals();
+        return rgList.size()+1;
+    }
+
+    public List<RunningSession> retrieveAllRunningSessions()
+    {
+        List<RunningSession> RunningSessions = new ArrayList<RunningSession>();
         String selectQuery = "SELECT  * FROM " + GOAL_TABLE;
 
         Log.e(LOG, selectQuery);
@@ -176,7 +212,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 //RunningSession rs = new RunningSession();
 
-                //TODO add sessions
                 //RunningSessions.add(rg);
             } while (c.moveToNext());
         }

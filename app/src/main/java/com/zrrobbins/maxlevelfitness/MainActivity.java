@@ -114,10 +114,16 @@ public class MainActivity extends AppCompatActivity {
     public void testDB(View v)
     {
         Distance testDist = new Distance(35, "meters");
-        RunningGoal testGoal = new RunningGoal(1, GoalType.RUNNING, 5, testDist, 20);
+        int newID = dbHelper.getNewRunningGoalID();
+        RunningGoal testGoal = new RunningGoal(newID, GoalType.RUNNING, 5, testDist, 20);
         dbHelper.addRunningGoal(testGoal);
         List<RunningGoal> runningGoals = dbHelper.retrieveAllRunningGoals();
-        System.out.println("------------------"+runningGoals.get(0).getGoalFrequency()+"----------------");
+        System.out.println("Added goal with id: "+newID);
+        System.out.println("Number of running goals found: "+runningGoals.size());
+        for(RunningGoal rg : runningGoals)
+        {
+            System.out.println("Running Goal ID:"+rg.getGoalID());
+        }
 
     }
 }
