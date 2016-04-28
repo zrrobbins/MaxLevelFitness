@@ -4,17 +4,13 @@ package com.zrrobbins.maxlevelfitness.Running;
  * Created by Alexi on 4/24/2016.
  */
 public class DistSpeedPair {
-    private double startTime;
-    private double endTime;
     private Distance distance;
-    private int speed;
+    private Speed speed;
 
-    public DistSpeedPair(Distance distance, int speed, double startTime, double endTime)
+    public DistSpeedPair(Distance distance, Speed speed)
     {
         this.distance = distance;
         this.speed = speed;
-        this.startTime = startTime;
-        this.endTime = endTime;
     }
 
     public Distance getDistance()
@@ -22,18 +18,8 @@ public class DistSpeedPair {
         return distance;
     }
 
-    public int getSpeed()
+    public Speed getSpeed()
     {
         return speed;
-    }
-
-    public double getStartTime()
-    {
-        return startTime;
-    }
-
-    public double getEndTime()
-    {
-        return endTime;
     }
 }

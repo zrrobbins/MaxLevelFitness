@@ -7,22 +7,23 @@ import com.zrrobbins.maxlevelfitness.Abstracts.WorkoutSession;
  */
 public class RunningSession extends WorkoutSession {
     private RunningGoal runningGoal;
-    private DistSpeedPair distSpeed;
 
-    public RunningSession(RunningGoal runningGoal)
-    {
-        this.runningGoal = runningGoal;
+    public DistSpeedPair getDistSpeed() {
+        return distSpeed;
     }
 
-    public int getAverageSpeed()
+    private DistSpeedPair distSpeed;
+
+    public RunningSession(RunningGoal runningGoal, double startTime, double endTime, long id)
     {
-        return 0;
+        super(startTime, endTime, id);
+        this.runningGoal = runningGoal;
     }
 
     public RunningGoal getRunningGoal() {return runningGoal;}
 
-    public Distance getTotalDistance()
+    public void setDistSpeed( Distance dist, Speed speed)
     {
-        return null;
+        distSpeed = new DistSpeedPair(dist, speed);
     }
 }

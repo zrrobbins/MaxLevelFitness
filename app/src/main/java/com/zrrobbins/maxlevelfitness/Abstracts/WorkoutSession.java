@@ -4,9 +4,16 @@ package com.zrrobbins.maxlevelfitness.Abstracts;
  * Created by Alexi on 4/24/2016.
  */
 public abstract class WorkoutSession {
-    double startTime;
-    double endTime;
+    protected double startTime;
+    protected double endTime;
+    protected long id;
 
+    public WorkoutSession(double startTime, double endTime, long id)
+    {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.id=id;
+    }
     public double getElapsedTime()
     {
         return endTime-startTime;
