@@ -17,6 +17,7 @@ import android.widget.Button;
 import com.zrrobbins.maxlevelfitness.Abstracts.GoalType;
 import com.zrrobbins.maxlevelfitness.Running.Distance;
 import com.zrrobbins.maxlevelfitness.Running.RunningGoal;
+import com.zrrobbins.maxlevelfitness.Running.Speed;
 import com.zrrobbins.maxlevelfitness.ViewPager.ScreenSlidePageFragment;
 import com.zrrobbins.maxlevelfitness.database.DatabaseHelper;
 
@@ -33,18 +34,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button testExpList = (Button)findViewById(R.id.testListBut);
-        testExpList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                testListUI(v);
-            }
-        });
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
+        mPager.setCurrentItem(2);
         //Instantiate dbHelper
         dbHelper = new DatabaseHelper(this.getApplicationContext());
     }
@@ -100,6 +95,12 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     goal_search newGoalSearch =  goal_search.create(0);
                     return newGoalSearch;
+                case 1:
+                    //TODO: Instantiate and return runningClassifier
+                    return new ScreenSlidePageFragment(); //Remove this when you add the new Fragment
+                case 2:
+                    LandingFragment newLandingFrame = LandingFragment.create(2);
+                    return newLandingFrame;
                 default:
                     return new ScreenSlidePageFragment();
             }
@@ -114,8 +115,9 @@ public class MainActivity extends AppCompatActivity {
     public void testDB(View v)
     {
         Distance testDist = new Distance(35, "meters");
+        Speed testSpeed = new Speed(3, "m/s");
         int newID = dbHelper.getNewRunningGoalID();
-        RunningGoal testGoal = new RunningGoal(newID, GoalType.RUNNING, 5, testDist, 20);
+        RunningGoal testGoal = new RunningGoal(newID, GoalType.RUNNING, 5, testDist, testSpeed);
         dbHelper.addRunningGoal(testGoal);
         List<RunningGoal> runningGoals = dbHelper.retrieveAllRunningGoals();
         System.out.println("Added goal with id: "+newID);

@@ -84,41 +84,6 @@ public class goal_search extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        /*
-        fetchGoals();
-
-        ArrayList<String> goalNames = fetchGoalNames();
-
-        lv = (ListView) getView().findViewById(R.id.goalListView);
-        searchInput = (EditText) getView().findViewById(R.id.searchFragmentSearchBar);
-
-        // Add items to list view
-        adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),
-                R.layout.group_item, R.id.goal_name, goalNames);
-        lv.setAdapter(adapter);
-
-        searchInput.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
-                // When user changed the Text
-                goal_search.this.adapter.getFilter().filter(cs);
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-                                          int arg3) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                // TODO Auto-generated method stub
-            }
-        });
-        */
     }
 
 
