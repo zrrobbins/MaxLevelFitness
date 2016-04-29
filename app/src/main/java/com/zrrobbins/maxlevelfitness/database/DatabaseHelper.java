@@ -180,36 +180,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return rg;
     }
 
-    public RunningSession getRunningSession(long sessionID) {
+    public List<RunningSession> getRunningSessionsWithParentID(long parentID) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String selectQuery = "SELECT  * FROM " + SESSION_TABLE + " WHERE "
-                + DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_SESSION_ID + " = " + sessionID;
+                + DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_PARENT_GOAL_ID + " = " + parentID;
 
         Cursor c = db.rawQuery(selectQuery, null);
 
-        if (c != null)
-            c.moveToFirst();
+        List<RunningSession> RunningSessions = new ArrayList<RunningSession>();
 
-        long parentGoalID = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_PARENT_GOAL_ID)));
-        RunningGoal parentGoal = getRunningGoal(parentGoalID);
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                long parentGoalID = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_PARENT_GOAL_ID)));
+                RunningGoal parentGoal = getRunningGoal(parentGoalID);
 
-        int speedVal = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_SPEED_VALUE)));
-        String speedUnits = c.getString((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_SPEED_UNITS)));
-        Speed newSpeed = new Speed(speedVal, speedUnits);
+                int speedVal = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_SPEED_VALUE)));
+                String speedUnits = c.getString((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_SPEED_UNITS)));
+                Speed newSpeed = new Speed(speedVal, speedUnits);
 
-        int distVal = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_DISTANCE_LENGTH)));
-        String distUnits = c.getString((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_DISTANCE_UNITS)));
-        Distance newDistance = new Distance (distVal, distUnits);
+                int distVal = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_DISTANCE_LENGTH)));
+                String distUnits = c.getString((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_DISTANCE_UNITS)));
+                Distance newDistance = new Distance (distVal, distUnits);
 
-        long newId = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_SESSION_ID)));
-        double startTime = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_START_TIME)));
-        double endTime = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_END_TIME)));
-        RunningSession rs = new RunningSession(parentGoal, startTime, endTime, newId);
+                long newId = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_SESSION_ID)));
+                double startTime = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_START_TIME)));
+                double endTime = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_END_TIME)));
+                RunningSession rs = new RunningSession(parentGoal, startTime, endTime, newId);
 
-        rs.setDistSpeed(newDistance, newSpeed);
+                rs.setDistSpeed(newDistance, newSpeed);
+                RunningSessions.add(rs);
+            } while (c.moveToNext());
+        }
 
-        return rs;
+        return RunningSessions;
     }
 
     public List<RunningGoal> retrieveAllRunningGoals()
@@ -237,7 +242,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 Speed newSpeed = new Speed(rgSpeedVal, rgSpeedUnits);
 
                 RunningGoal rg = new RunningGoal(rgID, rgType, rgFrequency, newDist, newSpeed);
-                //TODO add sessions
+
+                //Retrieve all relevant sessions
+                List<RunningSession> relevantSessions = getRunningSessionsWithParentID(rgID);
+                for (RunningSession rs : relevantSessions)
+                {
+                    rg.addRunningSession(rs);
+                }
+
                 RunningGoals.add(rg);
             } while (c.moveToNext());
         }
@@ -249,7 +261,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<RunningSession> retrieveAllRunningSessions()
     {
         List<RunningSession> RunningSessions = new ArrayList<RunningSession>();
-        String selectQuery = "SELECT  * FROM " + GOAL_TABLE;
+        String selectQuery = "SELECT  * FROM " + SESSION_TABLE;
 
         Log.e(LOG, selectQuery);
 
@@ -259,10 +271,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (c.moveToFirst()) {
             do {
-                //TODO: Implement this
-                //RunningSession rs = new RunningSession();
+                long parentGoalID = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_PARENT_GOAL_ID)));
+                RunningGoal parentGoal = getRunningGoal(parentGoalID);
 
-                //RunningSessions.add(rg);
+                int speedVal = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_SPEED_VALUE)));
+                String speedUnits = c.getString((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_SPEED_UNITS)));
+                Speed newSpeed = new Speed(speedVal, speedUnits);
+
+                int distVal = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_DISTANCE_LENGTH)));
+                String distUnits = c.getString((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_DISTANCE_UNITS)));
+                Distance newDistance = new Distance (distVal, distUnits);
+
+                long newId = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_SESSION_ID)));
+                double startTime = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_START_TIME)));
+                double endTime = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_END_TIME)));
+                RunningSession rs = new RunningSession(parentGoal, startTime, endTime, newId);
+
+                rs.setDistSpeed(newDistance, newSpeed);
+                RunningSessions.add(rs);
             } while (c.moveToNext());
         }
 
@@ -276,13 +302,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return rgList.size()+1;
     }
 
-    /*
-    TODO: Implement this
     public int getNewRunningSessionID()
     {
-        List<RunningGoal> rsList = retrieveAllRunningSessions();
+        List<RunningSession> rsList = retrieveAllRunningSessions();
         return rsList.size()+1;
     }
-    */
 
 }
