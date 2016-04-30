@@ -12,6 +12,8 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zrrobbins.maxlevelfitness.Abstracts.Goal;
+import com.zrrobbins.maxlevelfitness.Abstracts.GoalType;
 import com.zrrobbins.maxlevelfitness.CustomExpandableAdapter;
 import com.zrrobbins.maxlevelfitness.R;
 
@@ -32,6 +34,9 @@ public class GoalSessionFragment extends Fragment {
     String goalName;
     Boolean isGoalBeingTracked;
 
+    TextView goalIdView;
+    TextView goalTypeView;
+    TextView goalFrequencyView;
     TextView goalNameView;
     TextView isGoalBeingTrackedView;
 
@@ -74,8 +79,11 @@ public class GoalSessionFragment extends Fragment {
 
         View inflated =  inflater.inflate(R.layout.goal_session_fragment, container, false);
         final View inflatedCopy = inflated;
-        goalNameView = (TextView) inflated.findViewById(R.id.nameOfGoalBeingTracked);
-        isGoalBeingTrackedView = (TextView) inflated.findViewById(R.id.isGoalBeingTracked);
+        //goalNameView = (TextView) inflated.findViewById(R.id.nameOfGoalBeingTracked);
+        //isGoalBeingTrackedView = (TextView) inflated.findViewById(R.id.isGoalBeingTracked);
+        goalIdView = (TextView) inflated.findViewById(R.id.goalID);
+        goalTypeView = (TextView) inflated.findViewById(R.id.goalType);
+        goalFrequencyView = (TextView) inflated.findViewById(R.id.goalFrequency);
 
         return inflated;
     }
@@ -89,6 +97,13 @@ public class GoalSessionFragment extends Fragment {
 
         }
     }
+
+    public void updateGoalSessionInfo(Goal goal) {
+        goalIdView.setText("" + goal.getGoalID());
+        goalTypeView.setText("" + goal.getGoalType().toString());
+        goalFrequencyView.setText("" + goal.getGoalFrequency());
+    }
+
 
     @Override
     public void onDetach() {

@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Text"
-        android:id="@+id/isGoalBeingTracked"
+        android:id="@+id/goalID"
         android:layout_below="@+id/goalSessionFragmentTitle"
         android:layout_centerHorizontal="true" />
 
@@ -31,8 +31,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Text"
-        android:id="@+id/nameOfGoalBeingTracked"
-        android:layout_below="@+id/isGoalBeingTracked"
+        android:id="@+id/goalType"
+        android:layout_below="@+id/goalID"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/goalFrequency"
+        android:layout_below="@+id/goalType"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

@@ -12,6 +12,11 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zrrobbins.maxlevelfitness.Abstracts.Goal;
+import com.zrrobbins.maxlevelfitness.Abstracts.GoalType;
+import com.zrrobbins.maxlevelfitness.Running.Distance;
+import com.zrrobbins.maxlevelfitness.Running.RunningGoal;
+import com.zrrobbins.maxlevelfitness.Running.Speed;
 import com.zrrobbins.maxlevelfitness.ViewPager.GoalSessionFragment;
 
 import java.util.ArrayList;
@@ -36,8 +41,10 @@ public class LandingFragment extends Fragment {
     Map<String, List<String>> laptopCollection;
     ExpandableListView expListView;
 
-    TextView goalNameView;
-    TextView isGoalBeingTrackedView;
+    List<Goal> goalList;
+    List<String> goalStringList;
+    List<String> goalChildList;
+    Map<String, List<String>> goalCollection;
 
     public LandingFragment() {
         // Required empty public constructor
@@ -81,25 +88,21 @@ public class LandingFragment extends Fragment {
         View inflated =  inflater.inflate(R.layout.landing_page, container, false);
         final View inflatedCopy = inflated;
         expListView = (ExpandableListView) inflated.findViewById(R.id.laptop_list);
+        //final ExpandableListAdapter expListAdapter = new CustomExpandableAdapter(
+        //        this.getActivity(), groupList, laptopCollection);
         final ExpandableListAdapter expListAdapter = new CustomExpandableAdapter(
-                this.getActivity(), groupList, laptopCollection);
+                this.getActivity(), goalStringList, goalCollection);
         expListView.setAdapter(expListAdapter);
 
         expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-
             @Override
             public void onGroupExpand(int groupPosition) {
                 final String selected = (String) expListAdapter.getGroup(groupPosition);
                 Toast.makeText(inflatedCopy.getContext(), selected + " selected for session tracking"
                         , Toast.LENGTH_LONG).show();
 
-                GoalSessionFragment goalSessionFragment = (GoalSessionFragment)getFragmentManager().
-                        findFragmentById(R.id.goalSessionFragment);
+                ((MainActivity)getActivity()).updateGoalSessionInfo(goalList.get(Integer.parseInt(selected)-1));
 
-                //expListView.child
-               // goalSessionFragment.updateTrackingSessionInfo(expListAdapter.getChild(groupPosition, childPosition)
-                //goalNameView = (TextView) goalSessionFragment.getContext().findViewById(R.id.nameOfGoalBeingTracked);
-                //isGoalBeingTrackedView = (TextView) inflated.findViewById(R.id.isGoalBeingTracked);
             }
         });
 
@@ -135,19 +138,51 @@ public class LandingFragment extends Fragment {
     }
 
     private void createGroupList() {
+        goalList = new ArrayList<Goal>();
+        goalList.add(new RunningGoal(1, GoalType.RUNNING, 5, new Distance(4, "mile"), new Speed(6, "mph")));
+        goalList.add(new RunningGoal(2, GoalType.RUNNING, 10, new Distance(8, "mile"), new Speed(4, "mph")));
+        goalStringList = new ArrayList<String>();
+        for (Goal goal : goalList) {
+            goalStringList.add(""+goal.getGoalID());
+        }
+
         groupList = new ArrayList<String>();
         groupList.add("Running Goal 1");
-        groupList.add("HP");
-        groupList.add("Dell");
-        groupList.add("Lenovo");
-        groupList.add("Sony");
-        groupList.add("HCL");
-        groupList.add("Samsung");
+        //groupList.add("HP");
+        //groupList.add("Dell");
+        //groupList.add("Lenovo");
+        //groupList.add("Sony");
+        //groupList.add("HCL");
+        //groupList.add("Samsung");
     }
 
     private void createCollection() {
+
+        // preparing goals collection
+        String[] runningGoal1Info = {"Goal ID: " + goalList.get(0).getGoalID(),
+                "Goal Type: " + goalList.get(0).getGoalType(),
+                "Goal Frequency: " + goalList.get(0).getGoalFrequency()};
+        String[] runningGoal2Info = {"Goal ID: " + goalList.get(1).getGoalID(),
+                "Goal Type: " + goalList.get(1).getGoalType(),
+                "Goal Frequency: " + goalList.get(1).getGoalFrequency()};
+
+        goalCollection = new LinkedHashMap<String, List<String>>();
+
+        for (String goalName : goalStringList) {
+            if (goalName.equals("1")) {
+                loadGoalChildInfo(runningGoal1Info);
+            }
+            else if (goalName.equals("2")) {
+                loadGoalChildInfo(runningGoal2Info);
+            }
+            goalCollection.put(goalName, goalChildList);
+        }
+
+
+
+
+
         // preparing laptops collection(child)
-        String[] runningGoal1Info = {"Name: Running Goal 1", "Distance: 5 miles"};
         String[] hpModels = { "HP Pavilion G6-2014TX", "ProBook HP 4540",
                 "HP Envy 4-1025TX" };
         String[] hclModels = { "HCL S2101", "HCL L2102", "HCL V2002" };
@@ -178,6 +213,12 @@ public class LandingFragment extends Fragment {
 
             laptopCollection.put(laptop, childList);
         }
+    }
+
+    private void loadGoalChildInfo(String[] goalChildInfo) {
+        goalChildList = new ArrayList<String>();
+        for (String info : goalChildInfo)
+            goalChildList.add(info);
     }
 
     private void loadChild(String[] laptopModels) {
