@@ -7,22 +7,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListAdapter;
-import android.widget.ExpandableListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zrrobbins.maxlevelfitness.Abstracts.Goal;
-import com.zrrobbins.maxlevelfitness.Abstracts.GoalType;
-import com.zrrobbins.maxlevelfitness.CustomExpandableAdapter;
 import com.zrrobbins.maxlevelfitness.R;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by zrrobbins on 4/29/16.
@@ -31,14 +20,11 @@ public class GoalSessionFragment extends Fragment {
     public static final String ARG_PAGE = "page";
 
     private OnFragmentInteractionListener mListener;
-    String goalName;
-    Boolean isGoalBeingTracked;
 
     TextView goalIdView;
     TextView goalTypeView;
     TextView goalFrequencyView;
     TextView goalNameView;
-    TextView isGoalBeingTrackedView;
 
     public GoalSessionFragment() {
         // Required empty public constructor
@@ -80,7 +66,6 @@ public class GoalSessionFragment extends Fragment {
         View inflated =  inflater.inflate(R.layout.goal_session_fragment, container, false);
         final View inflatedCopy = inflated;
         //goalNameView = (TextView) inflated.findViewById(R.id.nameOfGoalBeingTracked);
-        //isGoalBeingTrackedView = (TextView) inflated.findViewById(R.id.isGoalBeingTracked);
         goalIdView = (TextView) inflated.findViewById(R.id.goalID);
         goalTypeView = (TextView) inflated.findViewById(R.id.goalType);
         goalFrequencyView = (TextView) inflated.findViewById(R.id.goalFrequency);
