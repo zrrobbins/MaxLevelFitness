@@ -2,6 +2,7 @@ package com.zrrobbins.maxlevelfitness;
 
 import android.content.Intent;
 import android.provider.ContactsContract;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -43,6 +44,11 @@ public class MainActivity extends AppCompatActivity {
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
         mPager.setCurrentItem(2);
+
+        //Attach tablayout to view pager
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(mPager);
+
         //Instantiate dbHelper
         dbHelper = new DatabaseHelper(this.getApplicationContext());
     }
@@ -107,6 +113,30 @@ public class MainActivity extends AppCompatActivity {
                 default:
                     return new ScreenSlidePageFragment();
             }
+        }
+
+        //Provides the titles of the fragments for use in tabLayout
+        public CharSequence getPageTitle(int position) {
+            String title=" ";
+            switch (position){
+                case 0:
+                    title="Search";
+                    break;
+                case 1:
+                    title="Session";
+                    break;
+                case 2:
+                    title="Goals";
+                    break;
+                case 3:
+                    title="Stats";
+                    break;
+                case 4:
+                    title="Leaders";
+                    break;
+            }
+
+            return title;
         }
 
         @Override
