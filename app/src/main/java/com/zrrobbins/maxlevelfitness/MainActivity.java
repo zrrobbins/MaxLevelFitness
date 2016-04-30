@@ -18,6 +18,7 @@ import com.zrrobbins.maxlevelfitness.Abstracts.GoalType;
 import com.zrrobbins.maxlevelfitness.Running.Distance;
 import com.zrrobbins.maxlevelfitness.Running.RunningGoal;
 import com.zrrobbins.maxlevelfitness.Running.Speed;
+import com.zrrobbins.maxlevelfitness.ViewPager.GoalSessionFragment;
 import com.zrrobbins.maxlevelfitness.ViewPager.ScreenSlidePageFragment;
 import com.zrrobbins.maxlevelfitness.database.DatabaseHelper;
 
@@ -96,8 +97,8 @@ public class MainActivity extends AppCompatActivity {
                     goal_search newGoalSearch =  goal_search.create(0);
                     return newGoalSearch;
                 case 1:
-                    //TODO: Instantiate and return runningClassifier
-                    return new ScreenSlidePageFragment(); //Remove this when you add the new Fragment
+                    GoalSessionFragment newGoalSessionFrame = GoalSessionFragment.create(1);
+                    return newGoalSessionFrame; //Remove this when you add the new Fragment
                 case 2:
                     LandingFragment newLandingFrame = LandingFragment.create(2);
                     return newLandingFrame;

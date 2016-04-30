@@ -12,6 +12,8 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zrrobbins.maxlevelfitness.ViewPager.GoalSessionFragment;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,6 +35,9 @@ public class LandingFragment extends Fragment {
     List<String> childList;
     Map<String, List<String>> laptopCollection;
     ExpandableListView expListView;
+
+    TextView goalNameView;
+    TextView isGoalBeingTrackedView;
 
     public LandingFragment() {
         // Required empty public constructor
@@ -80,6 +85,24 @@ public class LandingFragment extends Fragment {
                 this.getActivity(), groupList, laptopCollection);
         expListView.setAdapter(expListAdapter);
 
+        expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                final String selected = (String) expListAdapter.getGroup(groupPosition);
+                Toast.makeText(inflatedCopy.getContext(), selected + " selected for session tracking"
+                        , Toast.LENGTH_LONG).show();
+
+                GoalSessionFragment goalSessionFragment = (GoalSessionFragment)getFragmentManager().
+                        findFragmentById(R.id.goalSessionFragment);
+
+                //expListView.child
+               // goalSessionFragment.updateTrackingSessionInfo(expListAdapter.getChild(groupPosition, childPosition)
+                //goalNameView = (TextView) goalSessionFragment.getContext().findViewById(R.id.nameOfGoalBeingTracked);
+                //isGoalBeingTrackedView = (TextView) inflated.findViewById(R.id.isGoalBeingTracked);
+            }
+        });
+
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 
             public boolean onChildClick(ExpandableListView parent, View v,
@@ -113,6 +136,7 @@ public class LandingFragment extends Fragment {
 
     private void createGroupList() {
         groupList = new ArrayList<String>();
+        groupList.add("Running Goal 1");
         groupList.add("HP");
         groupList.add("Dell");
         groupList.add("Lenovo");
@@ -123,6 +147,7 @@ public class LandingFragment extends Fragment {
 
     private void createCollection() {
         // preparing laptops collection(child)
+        String[] runningGoal1Info = {"Name: Running Goal 1", "Distance: 5 miles"};
         String[] hpModels = { "HP Pavilion G6-2014TX", "ProBook HP 4540",
                 "HP Envy 4-1025TX" };
         String[] hclModels = { "HCL S2101", "HCL L2102", "HCL V2002" };
@@ -146,8 +171,10 @@ public class LandingFragment extends Fragment {
                 loadChild(hclModels);
             else if (laptop.equals("Samsung"))
                 loadChild(samsungModels);
-            else
+            else if (laptop.equals("Lenovo"))
                 loadChild(lenovoModels);
+            else
+                loadChild(runningGoal1Info);
 
             laptopCollection.put(laptop, childList);
         }
