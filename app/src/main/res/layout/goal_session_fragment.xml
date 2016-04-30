@@ -22,26 +22,119 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/goalID"
+        android:text="Tracking currently not active."
+        android:id="@+id/isGoalBeingTracked"
         android:layout_below="@+id/goalSessionFragmentTitle"
         android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/goalType"
-        android:layout_below="@+id/goalID"
-        android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/goalFrequency"
-        android:layout_below="@+id/goalType"
-        android:layout_centerHorizontal="true" />
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/isGoalBeingTracked"
+        android:padding="10dp">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Goal ID:"
+                android:id="@+id/goalIDTitle"
+                android:layout_centerHorizontal="true"
+                android:textSize="16dp" />
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Goal ID"
+                android:id="@+id/goalID"
+                android:layout_below="@+id/goalSessionFragmentTitle"
+                android:layout_centerHorizontal="true"
+                android:textSize="16dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Goal Type:"
+                android:id="@+id/goalTypeTitle"
+                android:layout_centerHorizontal="true"
+                android:textSize="16dp" />
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Goal Type"
+                android:id="@+id/goalType"
+                android:layout_below="@+id/goalID"
+                android:layout_centerHorizontal="true"
+                android:textSize="16dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Goal Frequency:"
+                android:id="@+id/goalFrequencyTitle"
+                android:layout_centerHorizontal="true"
+                android:textSize="16dp" />
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Goal Frequency"
+                android:id="@+id/goalFrequency"
+                android:layout_below="@+id/goalType"
+                android:layout_centerHorizontal="true"
+                android:textSize="16dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="User Speed:"
+                android:id="@+id/userSpeedTitle"
+                android:layout_centerHorizontal="true"
+                android:textSize="16dp" />
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="User Speed"
+                android:id="@+id/userSpeed"
+                android:layout_centerHorizontal="true"
+                android:textSize="16dp" />
+        </TableRow>
+    </TableLayout>
+
 
 </RelativeLayout>
 
