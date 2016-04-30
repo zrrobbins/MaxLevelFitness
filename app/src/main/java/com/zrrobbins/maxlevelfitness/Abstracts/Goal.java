@@ -8,6 +8,7 @@ public abstract class Goal
     private GoalType goalType;
     private int goalID;
     private int frequency;
+    private boolean completed = false;
 
 
     public Goal(int goalName, GoalType goalType, int frequency) {
@@ -28,5 +29,13 @@ public abstract class Goal
     public GoalType getGoalType()
     {
         return goalType;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }

@@ -12,7 +12,7 @@ public class RunningGoal extends Goal {
 
     private Distance distance;
     private Speed speed;
-    private ArrayList<RunningSession> sessions;
+    private ArrayList<RunningSession> sessions = new ArrayList<RunningSession>();
 
     public RunningGoal(int goalID, GoalType goalType, int frequency, Distance distance, Speed speed) {
         super(goalID, goalType, frequency);
@@ -26,6 +26,16 @@ public class RunningGoal extends Goal {
     }
 
     public Distance getDistance(){ return distance;}
+
+    public long getTotalDistanceRan()
+    {
+        long retVal = 0;
+        for (RunningSession sess: sessions)
+        {
+            retVal += sess.getDistSpeed().getDistance().getLength();
+        }
+        return retVal;
+    }
 
     public Speed getSpeed() {return speed; }
 

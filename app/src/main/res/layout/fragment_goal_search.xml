@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,7 +6,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="tools:context=com.zrrobbins.maxlevelfitness.goal_search">
+    tools:context="tools:context=com.zrrobbins.maxlevelfitness.goal_search"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/searchFragmentTitle"
@@ -14,8 +15,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:text="Search Goals"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:text="Search Sessions"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_gravity="center_horizontal" />
 
     <EditText
         android:id="@+id/searchFragmentSearchBar"
@@ -24,14 +26,30 @@
         android:layout_below="@+id/searchFragmentTitle"
         android:layout_centerHorizontal="true"
         android:hint="Enter search term..." />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/expListContainer"
+        android:layout_weight="6" >
 
-    <ListView
-        android:id="@+id/goalListView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/searchFragmentSearchBar"
-        android:layout_centerHorizontal="true" />
-</RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <ExpandableListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@android:id/list"
+                android:visibility="gone" />
+
+            <ExpandableListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/laptop_list" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>
 
 
 

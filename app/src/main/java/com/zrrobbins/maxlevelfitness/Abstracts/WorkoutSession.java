@@ -6,6 +6,11 @@ package com.zrrobbins.maxlevelfitness.Abstracts;
 public abstract class WorkoutSession {
     protected double startTime;
     protected double endTime;
+
+    public long getId() {
+        return id;
+    }
+
     protected long id;
 
     public WorkoutSession(double startTime, double endTime, long id)
@@ -22,4 +27,5 @@ public abstract class WorkoutSession {
     public double getStartTime() { return startTime;}
 
     public double getEndTime() { return endTime; }
+
 }

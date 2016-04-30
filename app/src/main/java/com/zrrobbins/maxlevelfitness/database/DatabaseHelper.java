@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.zrrobbins.maxlevelfitness.Abstracts.GoalType;
+import com.zrrobbins.maxlevelfitness.Running.DistSpeedPair;
 import com.zrrobbins.maxlevelfitness.Running.Distance;
 import com.zrrobbins.maxlevelfitness.Running.RunningGoal;
 import com.zrrobbins.maxlevelfitness.Running.RunningSession;
@@ -25,7 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String LOG = "DatabaseHelper";
 
     // Database Version
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     // Database Name
     private static final String DATABASE_NAME = "RunningDatabase";
@@ -44,6 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_FREQUENCY + " integer not null, "
             + DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_SPEED_VALUE + " integer not null,"
             + DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_SPEED_UNITS + " text not null,"
+            + DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_COMPLETED + " integer not null,"
             + DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_TYPE + " text not null)";
     //SESSION_TABLE Create String
     private static final String SESSION_TABLE_CREATE = "create table "
@@ -59,19 +61,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + " FOREIGN KEY ("+DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_PARENT_GOAL_ID+") REFERENCES "+
             GOAL_TABLE+"("+DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_ID+"));";
 
-    //DistSpeedPairs Table Create String
-    private static final String PAIR_TABLE_CREATE = "create table "
-            + PAIR_TABLE + " ("
-            + DatabaseContract.DatabaseEntry.DistSpeedPairEntry.COLUMN_NAME_PAIR_ID + " integer primary key autoincrement, "
-            + DatabaseContract.DatabaseEntry.DistSpeedPairEntry.COLUMN_NAME_PARENT_SESSION_ID + " integer, "
-            + DatabaseContract.DatabaseEntry.DistSpeedPairEntry.COLUMN_NAME_DISTANCE_LENGTH+ " integer not null, "
-            + DatabaseContract.DatabaseEntry.DistSpeedPairEntry.COLUMN_NAME_DISTANCE_UNITS + " text not null,"
-            + DatabaseContract.DatabaseEntry.DistSpeedPairEntry.COLUMN_NAME_SPEED + " integer not null,"
-            + DatabaseContract.DatabaseEntry.DistSpeedPairEntry.COLUMN_NAME_START_TIME + " integer not null,"
-            + DatabaseContract.DatabaseEntry.DistSpeedPairEntry.COLUMN_NAME_END_TIME + " integer not null,"
-            + " FOREIGN KEY ("+DatabaseContract.DatabaseEntry.DistSpeedPairEntry.COLUMN_NAME_PARENT_SESSION_ID+") REFERENCES "+
-            SESSION_TABLE+"("+DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_SESSION_ID+"));";
-
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -81,7 +70,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // creating required tables
         db.execSQL(CREATE_GOAL_TABLE);
         db.execSQL(SESSION_TABLE_CREATE);
-        db.execSQL(PAIR_TABLE_CREATE);
     }
 
     @Override
@@ -95,16 +83,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void dropAllTables(SQLiteDatabase db)
+    public void clearDB()
     {
-        db.execSQL("DROP TABLE IF EXISTS " + GOAL_TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + SESSION_TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + PAIR_TABLE);
+        this.getWritableDatabase().execSQL("DROP TABLE IF EXISTS " + GOAL_TABLE);
+        this.getWritableDatabase().execSQL("DROP TABLE IF EXISTS " + SESSION_TABLE);
+        this.getWritableDatabase().execSQL("DROP TABLE IF EXISTS " + PAIR_TABLE);
+
+        onCreate(this.getWritableDatabase());
     }
 
     public void addRunningGoal(RunningGoal goal)
     {
         SQLiteDatabase db = this.getWritableDatabase();
+        int completedState = 0;
 
         ContentValues values = new ContentValues();
         values.put(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_DISTANCE_UNITS,
@@ -119,9 +110,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 goal.getSpeed().getUnits());
         values.put(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_TYPE,
                 goal.getGoalType().toString());
-
+        if (goal.isCompleted())
+        {
+            completedState = 1;
+        }
+        values.put(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_COMPLETED,
+                completedState);
         // insert row
-        long todo_id = db.insert(GOAL_TABLE, null, values);
+        long goal_id = db.insert(GOAL_TABLE, null, values);
     }
 
     public void addRunningSession(RunningSession sess)
@@ -175,7 +171,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String rgSpeedUnits = c.getString((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_SPEED_UNITS)));
         Speed newSpeed = new Speed(rgSpeedVal, rgSpeedUnits);
 
+        int completedState = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_COMPLETED)));
+
         RunningGoal rg = new RunningGoal(rgID, rgType, rgFrequency, newDist, newSpeed);
+        if (completedState > 0)
+        {
+            rg.setCompleted(true);
+        }
 
         return rg;
     }
@@ -207,9 +209,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 long newId = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_SESSION_ID)));
                 double startTime = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_START_TIME)));
                 double endTime = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_END_TIME)));
-                RunningSession rs = new RunningSession(parentGoal, startTime, endTime, newId);
-
-                rs.setDistSpeed(newDistance, newSpeed);
+                RunningSession rs = new RunningSession(parentGoal, startTime, endTime, newId, new DistSpeedPair(newDistance, newSpeed));
                 RunningSessions.add(rs);
             } while (c.moveToNext());
         }
@@ -241,8 +241,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 String rgSpeedUnits = c.getString((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_SPEED_UNITS)));
                 Speed newSpeed = new Speed(rgSpeedVal, rgSpeedUnits);
 
-                RunningGoal rg = new RunningGoal(rgID, rgType, rgFrequency, newDist, newSpeed);
+                int completedState = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_COMPLETED)));
 
+                RunningGoal rg = new RunningGoal(rgID, rgType, rgFrequency, newDist, newSpeed);
+                if (completedState > 0)
+                {
+                    rg.setCompleted(true);
+                }
                 //Retrieve all relevant sessions
                 List<RunningSession> relevantSessions = getRunningSessionsWithParentID(rgID);
                 for (RunningSession rs : relevantSessions)
@@ -285,9 +290,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 long newId = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_SESSION_ID)));
                 double startTime = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_START_TIME)));
                 double endTime = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_END_TIME)));
-                RunningSession rs = new RunningSession(parentGoal, startTime, endTime, newId);
+                RunningSession rs = new RunningSession(parentGoal, startTime, endTime, newId, new DistSpeedPair(newDistance, newSpeed));
 
-                rs.setDistSpeed(newDistance, newSpeed);
                 RunningSessions.add(rs);
             } while (c.moveToNext());
         }

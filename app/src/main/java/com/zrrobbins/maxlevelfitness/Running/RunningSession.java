@@ -14,10 +14,11 @@ public class RunningSession extends WorkoutSession {
 
     private DistSpeedPair distSpeed;
 
-    public RunningSession(RunningGoal runningGoal, double startTime, double endTime, long id)
+    public RunningSession(RunningGoal runningGoal, double startTime, double endTime, long id, DistSpeedPair distSpeed)
     {
         super(startTime, endTime, id);
         this.runningGoal = runningGoal;
+        this.distSpeed = distSpeed;
     }
 
     public RunningGoal getRunningGoal() {return runningGoal;}

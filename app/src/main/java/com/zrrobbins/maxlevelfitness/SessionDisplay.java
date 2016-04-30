@@ -1,73 +1,82 @@
 package com.zrrobbins.maxlevelfitness;
 
-import android.content.Context;
+import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.TextView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.zrrobbins.maxlevelfitness.Abstracts.Goal;
 import com.zrrobbins.maxlevelfitness.Abstracts.GoalType;
 import com.zrrobbins.maxlevelfitness.Running.Distance;
 import com.zrrobbins.maxlevelfitness.Running.RunningGoal;
+import com.zrrobbins.maxlevelfitness.Running.RunningSession;
 import com.zrrobbins.maxlevelfitness.Running.Speed;
-import com.zrrobbins.maxlevelfitness.ViewPager.GoalSessionFragment;
 import com.zrrobbins.maxlevelfitness.database.DatabaseHelper;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link LandingFragment.OnFragmentInteractionListener} interface
+ * {@link SessionDisplay.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link LandingFragment#newInstance} factory method to
+ * Use the {@link SessionDisplay# newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LandingFragment extends Fragment {
+public class SessionDisplay extends Fragment {
     public static final String ARG_PAGE = "page";
 
     private DatabaseHelper dbHelper;
     private OnFragmentInteractionListener mListener;
     List<String> groupList;
     List<String> childList;
-    Map<String, List<String>> laptopCollection;
     ExpandableListView expListView;
 
-    List<RunningGoal> goalList;
-    List<String> goalStringList;
-    List<String> goalChildList;
-    Map<String, List<String>> goalCollection;
-
-    public LandingFragment() {
-        // Required empty public constructor
-    }
+    List<RunningSession> sessionList;
+    List<String> sessionStringList;
+    List<String> sessionChildList;
+    Map<String, List<String>> sessionCollection;
+    //ArrayList<HashMap<String,String>> sessionList;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment LandingFragment.
-     */
-    public static LandingFragment newInstance() {
-        LandingFragment fragment = new LandingFragment();
+     * @param //param1 Parameter 1.
+     * @param //param2 Parameter 2.
+     * @return A new instance of fragment SessionDisplay.
+
+    // TODO: Rename and change types and number of parameters
+    public static SessionDisplay newInstance(String param1, String param2) {
+        SessionDisplay fragment = new SessionDisplay();
         Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
+*/
 
-    public static LandingFragment create(int pageNumber)
+    public static SessionDisplay create(int pageNumber)
     {
-        LandingFragment fragment = new LandingFragment();
+
+        SessionDisplay fragment = new SessionDisplay();
         Bundle args = new Bundle();
         System.out.println("page number: " + pageNumber);
         args.putInt(ARG_PAGE, pageNumber);
@@ -75,42 +84,29 @@ public class LandingFragment extends Fragment {
         return fragment;
     }
 
+    public SessionDisplay() {
+        // Required empty public constructor
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        dbHelper = new DatabaseHelper(this.getContext());
         createGroupList();
         createCollection();
-        dbHelper = new DatabaseHelper(this.getContext());
-        for (RunningGoal goal:goalList)
-        {
-            dbHelper.addRunningGoal(goal);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View inflated =  inflater.inflate(R.layout.landing_page, container, false);
+        View inflated =  inflater.inflate(R.layout.fragment_goal_search, container, false);
         final View inflatedCopy = inflated;
         expListView = (ExpandableListView) inflated.findViewById(R.id.laptop_list);
         //final ExpandableListAdapter expListAdapter = new CustomExpandableAdapter(
         //        this.getActivity(), groupList, laptopCollection);
         final ExpandableListAdapter expListAdapter = new CustomExpandableAdapter(
-                this.getActivity(), goalStringList, goalCollection);
+                this.getActivity(), sessionStringList, sessionCollection);
         expListView.setAdapter(expListAdapter);
-
-        expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                final String selected = (String) expListAdapter.getGroup(groupPosition);
-                Toast.makeText(inflatedCopy.getContext(), selected + " selected for session tracking"
-                        , Toast.LENGTH_LONG).show();
-
-                ((MainActivity) getActivity()).updateGoalSessionInfo(goalList.get(Integer.parseInt(selected) - 1));
-
-            }
-        });
 
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 
@@ -127,13 +123,12 @@ public class LandingFragment extends Fragment {
         return inflated;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
 
+
+    // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
         }
     }
 
@@ -144,12 +139,18 @@ public class LandingFragment extends Fragment {
     }
 
     private void createGroupList() {
-        goalList = new ArrayList<RunningGoal>();
-        goalList.add(new RunningGoal(1, GoalType.RUNNING, 5, new Distance(4, "miles"), new Speed(6, "mph")));
-        goalList.add(new RunningGoal(2, GoalType.RUNNING, 3, new Distance(8, "miles"), new Speed(4, "mph")));
-        goalStringList = new ArrayList<String>();
-        for (RunningGoal goal : goalList) {
-            goalStringList.add(""+goal.getGoalID());
+        sessionList = dbHelper.retrieveAllRunningSessions();
+
+        List<RunningSession> allSessions = dbHelper.retrieveAllRunningSessions();
+        for (RunningSession sess: allSessions)
+        {
+
+        }
+
+
+        sessionStringList = new ArrayList<String>();
+        for (RunningSession sess : sessionList) {
+            sessionStringList.add("" + sess.getId());
         }
 
         groupList = new ArrayList<String>();
@@ -157,38 +158,45 @@ public class LandingFragment extends Fragment {
     }
 
     private void createCollection() {
-
+        String[][] allChildArrays = new String[sessionList.size()][5];
         // preparing goals collection
-        String[] runningGoal1Info = runningGoalToStringArray(goalList.get(0));
-        String[] runningGoal2Info = runningGoalToStringArray(goalList.get(1));
+        int counter = 0;
+        for (RunningSession sess: sessionList)
+        {
+            allChildArrays[counter] = runningSessionToStringArray(sess);
+            counter++;
+        }
 
-        goalCollection = new LinkedHashMap<String, List<String>>();
+        sessionCollection = new LinkedHashMap<String, List<String>>();
 
-        for (String goalName : goalStringList) {
-            if (goalName.equals("1")) {
-                loadGoalChildInfo(runningGoal1Info);
+        for (String sessionName : sessionStringList) {
+            if (sessionName.equals("1")) {
+                loadGoalChildInfo(allChildArrays[0]);
             }
-            else if (goalName.equals("2")) {
-                loadGoalChildInfo(runningGoal2Info);
+            else if (sessionName.equals("2")) {
+                loadGoalChildInfo(allChildArrays[1]);
             }
-            goalCollection.put(goalName, goalChildList);
+            sessionCollection.put(sessionName, sessionChildList);
         }
     }
 
-    private String[] runningGoalToStringArray(RunningGoal goal)
+    private String[] runningSessionToStringArray(RunningSession session)
     {
-        String[] retArray = new String[4];
-        retArray[0] = "Goal Type: "+goal.getGoalType();
-        retArray[1] = "Target frequency: "+goal.getGoalFrequency()+" days/week";
-        retArray[2] = "Target distance: "+goal.getDistance().getLength()+" "+goal.getDistance().getUnits();
-        retArray[3] = "Target speed: "+goal.getSpeed().getValue()+" "+goal.getSpeed().getUnits();
+        String[] retArray = new String[5];
+        retArray[0] = "Session Type: "+session.getRunningGoal().getGoalType();
+        retArray[1] = "Start time: "+(new Date((long)session.getStartTime()));
+        retArray[2] = "End time: "+(new Date((long)session.getEndTime()));
+        retArray[3] = "Distance: "+session.getDistSpeed().getDistance().getLength()
+                +" "+session.getDistSpeed().getDistance().getUnits();
+        retArray[4] = "Target speed: "+session.getDistSpeed().getSpeed().getValue()
+                +" "+session.getDistSpeed().getSpeed().getUnits();
         return retArray;
     }
 
     private void loadGoalChildInfo(String[] goalChildInfo) {
-        goalChildList = new ArrayList<String>();
+        sessionChildList = new ArrayList<String>();
         for (String info : goalChildInfo)
-            goalChildList.add(info);
+            sessionChildList.add(info);
     }
 
     /**
@@ -196,13 +204,14 @@ public class LandingFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
+     * <p>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        public void onFragmentInteraction(Uri uri);
     }
+
 }

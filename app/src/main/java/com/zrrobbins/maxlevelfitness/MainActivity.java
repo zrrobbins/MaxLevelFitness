@@ -1,7 +1,6 @@
 package com.zrrobbins.maxlevelfitness;
 
 import android.content.Intent;
-import android.provider.ContactsContract;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,17 +12,19 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
 import com.zrrobbins.maxlevelfitness.Abstracts.Goal;
 import com.zrrobbins.maxlevelfitness.Abstracts.GoalType;
+import com.zrrobbins.maxlevelfitness.Running.DistSpeedPair;
 import com.zrrobbins.maxlevelfitness.Running.Distance;
 import com.zrrobbins.maxlevelfitness.Running.RunningGoal;
+import com.zrrobbins.maxlevelfitness.Running.RunningSession;
 import com.zrrobbins.maxlevelfitness.Running.Speed;
 import com.zrrobbins.maxlevelfitness.ViewPager.GoalSessionFragment;
 import com.zrrobbins.maxlevelfitness.ViewPager.ScreenSlidePageFragment;
 import com.zrrobbins.maxlevelfitness.database.DatabaseHelper;
 
+import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
         mPager.setCurrentItem(2);
+        mPager.setOffscreenPageLimit(0);
 
         //Attach tablayout to view pager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
@@ -102,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    goal_search newGoalSearch =  goal_search.create(0);
+                    SessionDisplay newGoalSearch =  SessionDisplay.create(0);
                     return newGoalSearch;
                 case 1:
                     newGoalSessionFrame = GoalSessionFragment.create(1);
@@ -110,6 +112,9 @@ public class MainActivity extends AppCompatActivity {
                 case 2:
                     LandingFragment newLandingFrame = LandingFragment.create(2);
                     return newLandingFrame;
+                case 3:
+                    StatsDisplay statsDisplay = StatsDisplay.create(3);
+                    return statsDisplay;
                 default:
                     return new ScreenSlidePageFragment();
             }
@@ -159,12 +164,32 @@ public class MainActivity extends AppCompatActivity {
         {
             System.out.println("Running Goal ID:"+rg.getGoalID());
         }
+    }
 
+    public void clearDB(View v)
+    {
+        dbHelper.clearDB();
     }
 
 
     public void updateGoalSessionInfo(Goal goal) {
         newGoalSessionFrame.updateGoalSessionInfo(goal);
+    }
+
+    public void addGoalsAndSessions(View v)
+    {
+        Calendar calendar = Calendar.getInstance();
+        RunningGoal rg1 = new RunningGoal(dbHelper.getNewRunningGoalID(),
+                GoalType.RUNNING, 5 , new Distance(4, "miles"), new Speed(6, "mph"));
+        RunningGoal rg2 = new RunningGoal(dbHelper.getNewRunningGoalID(),
+                GoalType.RUNNING, 3, new Distance(8, "miles"), new Speed(4, "mph"));
+        DistSpeedPair testDistSpeed = new DistSpeedPair(new Distance (2, "miles"), new Speed (3, "mph"));
+        RunningSession rs1 = new RunningSession(rg1,
+                calendar.getTimeInMillis(), calendar.getTimeInMillis(), dbHelper.getNewRunningSessionID(), testDistSpeed);
+        rg1.addRunningSession(rs1);
+        dbHelper.addRunningGoal(rg1);
+        dbHelper.addRunningGoal(rg2);
+        dbHelper.addRunningSession(rs1);
     }
 
 
