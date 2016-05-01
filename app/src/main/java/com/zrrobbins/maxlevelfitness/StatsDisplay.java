@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 
 import com.zrrobbins.maxlevelfitness.Running.RunningGoal;
 import com.zrrobbins.maxlevelfitness.Running.RunningSession;
@@ -93,6 +94,11 @@ public class StatsDisplay extends ListFragment {
         adapter.notifyDataSetChanged();
     }
 
+    private void clearItemList()
+    {
+        listItems.clear();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -100,6 +106,14 @@ public class StatsDisplay extends ListFragment {
         View inflated =  inflater.inflate(R.layout.fragment_stats_display, container, false);
 
         calculateStats();
+        Button but = (Button)inflated.findViewById(R.id.updateButton);
+        but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                calculateStats();
+            }
+        });
+
         return inflated;
     }
 
@@ -143,23 +157,32 @@ public class StatsDisplay extends ListFragment {
 
     public void calculateStats()
     {
+        clearItemList();
         DatabaseHelper dbHelper = new DatabaseHelper(this.getContext());
         //Get number completed goals
         List<RunningGoal> allGoals = dbHelper.retrieveAllRunningGoals();
 
         int numCompletedGoals = 0;
         long totalDistanceRan = 0;
+        int fastestSpeed = 0;
         for (RunningGoal goal: allGoals)
         {
             if (goal.isCompleted())
             {
                 numCompletedGoals++;
-                totalDistanceRan += goal.getTotalDistanceRan();
             }
+            if (goal.getFastestSpeed() > fastestSpeed)
+            {
+                fastestSpeed = goal.getFastestSpeed();
+            }
+            System.out.println("Total distance of goal "+goal.getGoalID()+": "+goal.getTotalDistanceRan());
+            totalDistanceRan += goal.getTotalDistanceRan();
         }
         addItemToList("Total number of goals: "+allGoals.size());
         addItemToList("Number of goals completed: "+numCompletedGoals);
-        addItemToList("Total distance ran: "+totalDistanceRan);
+        addItemToList("Total distance ran: "+totalDistanceRan + " miles");
+        addItemToList("Fastest speed ran: "+fastestSpeed+" mph");
     }
+
 
 }

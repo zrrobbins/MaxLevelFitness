@@ -32,8 +32,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "RunningDatabase";
 
     // Table Names
-    public static final String GOAL_TABLE = "RunGoals";
-    public static final String SESSION_TABLE = "RunningSessions";
+    public static final String GOAL_TABLE = DatabaseContract.DatabaseEntry.RunGoalEntry.TABLE_NAME;
+    public static final String SESSION_TABLE = DatabaseContract.DatabaseEntry.RunningSessionEntry.TABLE_NAME;
     public static final String PAIR_TABLE = "DistSpeedPairs";
 
     //GOAL_TABLE Create String
@@ -118,9 +118,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 completedState);
         // insert row
         long goal_id = db.insert(GOAL_TABLE, null, values);
+
+        //Add sessions
+        for (RunningSession sess: goal.getSessions())
+        {
+            addRunningSession(sess);
+        }
     }
 
     public void addRunningSession(RunningSession sess)
+    {
+        if (checkExists(SESSION_TABLE, DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_SESSION_ID, sess.getId()))
+        {
+            updateRunningSession(sess);
+        }
+        else
+        {
+            SQLiteDatabase db = this.getWritableDatabase();
+
+            ContentValues values = new ContentValues();
+
+            values.put(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_PARENT_GOAL_ID,
+                    sess.getRunningGoal().getGoalID());
+            values.put(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_START_TIME,
+                    sess.getStartTime());
+            values.put(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_END_TIME,
+                    sess.getEndTime());
+            values.put(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_DISTANCE_LENGTH,
+                    sess.getDistSpeed().getDistance().getLength());
+            values.put(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_DISTANCE_UNITS,
+                    sess.getDistSpeed().getDistance().getUnits());
+            values.put(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_SPEED_VALUE,
+                    sess.getDistSpeed().getSpeed().getValue());
+            values.put(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_SPEED_UNITS,
+                    sess.getDistSpeed().getSpeed().getUnits());
+            // insert row
+            long todo_id = db.insert(SESSION_TABLE, null, values);
+        }
+    }
+
+    public void updateRunningSession (RunningSession sess)
     {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -141,7 +178,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_SPEED_UNITS,
                 sess.getDistSpeed().getSpeed().getUnits());
         // insert row
-        long todo_id = db.insert(SESSION_TABLE, null, values);
+        String equivalenceString = DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_SESSION_ID + "=" + Long.toString(sess.getId());
+        long todo_id = db.update(SESSION_TABLE, values, equivalenceString, null);
     }
 
     public RunningGoal getRunningGoal(long goalID) {
@@ -149,8 +187,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String selectQuery = "SELECT  * FROM " + GOAL_TABLE + " WHERE "
                 + DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_ID + " = " + goalID;
-
-        Log.e(LOG, selectQuery);
 
         Cursor c = db.rawQuery(selectQuery, null);
 
@@ -178,6 +214,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         {
             rg.setCompleted(true);
         }
+
+        c.close();
 
         return rg;
     }
@@ -259,6 +297,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             } while (c.moveToNext());
         }
 
+        c.close();
 
         return RunningGoals;
     }
@@ -267,8 +306,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     {
         List<RunningSession> RunningSessions = new ArrayList<RunningSession>();
         String selectQuery = "SELECT  * FROM " + SESSION_TABLE;
-
-        Log.e(LOG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
@@ -296,20 +333,64 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             } while (c.moveToNext());
         }
 
+        c.close();
 
         return RunningSessions;
+    }
+
+    private boolean checkExists(String TableName, String fieldName, long fieldValue) {
+        SQLiteDatabase sqldb = this.getWritableDatabase();
+        String Query = "Select * from " + TableName + " where " + fieldName + " = " + fieldValue;
+        Cursor cursor = sqldb.rawQuery(Query, null);
+        if(cursor.getCount() <= 0){
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+        return true;
     }
 
     public int getNewRunningGoalID()
     {
         List<RunningGoal> rgList = retrieveAllRunningGoals();
-        return rgList.size()+1;
+        if (rgList.size() == 0)
+        {
+            return 1;
+        }
+        else
+        {
+            SQLiteDatabase sqldb = this.getWritableDatabase();
+
+            String Query = "SELECT MAX("+ DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_ID+") AS max_id FROM "+GOAL_TABLE;
+            Cursor cursor = sqldb.rawQuery(Query, null);
+            if (cursor != null)
+                cursor.moveToFirst();
+            int retVal = (cursor.getInt((cursor.getColumnIndex("max_id"))))+1;
+            cursor.close();
+            return retVal;
+        }
     }
 
     public int getNewRunningSessionID()
     {
-        List<RunningSession> rsList = retrieveAllRunningSessions();
-        return rsList.size()+1;
+        List<RunningGoal> rsList = retrieveAllRunningGoals();
+        if (rsList.size() == 0)
+        {
+            return 1;
+        }
+        else
+        {
+            SQLiteDatabase sqldb = this.getWritableDatabase();
+
+            String Query = "SELECT MAX("+ DatabaseContract.DatabaseEntry.RunningSessionEntry.COLUMN_NAME_SESSION_ID+") AS max_id FROM "+SESSION_TABLE;
+            Cursor cursor = sqldb.rawQuery(Query, null);
+            if (cursor != null)
+                cursor.moveToFirst();
+
+            int retVal = (cursor.getInt((cursor.getColumnIndex("max_id"))))+1;
+            cursor.close();
+            return retVal;
+        }
     }
 
 }

@@ -106,8 +106,8 @@ public class LandingFragment extends Fragment {
                 final String selected = (String) expListAdapter.getGroup(groupPosition);
                 Toast.makeText(inflatedCopy.getContext(), selected + " selected for session tracking"
                         , Toast.LENGTH_LONG).show();
-
-                ((MainActivity) getActivity()).updateGoalSessionInfo(goalList.get(Integer.parseInt(selected) - 1));
+                final String lastInt = selected.substring(selected.length() - 1);
+                ((MainActivity) getActivity()).updateGoalSessionInfo(goalList.get(Integer.parseInt(lastInt) - 1));
 
             }
         });
@@ -149,7 +149,7 @@ public class LandingFragment extends Fragment {
         goalList.add(new RunningGoal(2, GoalType.RUNNING, 3, new Distance(8, "miles"), new Speed(4, "mph")));
         goalStringList = new ArrayList<String>();
         for (RunningGoal goal : goalList) {
-            goalStringList.add(""+goal.getGoalID());
+            goalStringList.add("Current Goal "+goal.getGoalID());
         }
 
         groupList = new ArrayList<String>();
@@ -165,10 +165,10 @@ public class LandingFragment extends Fragment {
         goalCollection = new LinkedHashMap<String, List<String>>();
 
         for (String goalName : goalStringList) {
-            if (goalName.equals("1")) {
+            if (goalName.equals("Current Goal 1")) {
                 loadGoalChildInfo(runningGoal1Info);
             }
-            else if (goalName.equals("2")) {
+            else if (goalName.equals("Current Goal 2")) {
                 loadGoalChildInfo(runningGoal2Info);
             }
             goalCollection.put(goalName, goalChildList);

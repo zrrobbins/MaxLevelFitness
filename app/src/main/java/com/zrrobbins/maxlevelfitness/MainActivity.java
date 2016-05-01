@@ -25,6 +25,7 @@ import com.zrrobbins.maxlevelfitness.ViewPager.ScreenSlidePageFragment;
 import com.zrrobbins.maxlevelfitness.database.DatabaseHelper;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -159,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
         dbHelper.addRunningGoal(testGoal);
         List<RunningGoal> runningGoals = dbHelper.retrieveAllRunningGoals();
         System.out.println("Added goal with id: "+newID);
-        System.out.println("Number of running goals found: "+runningGoals.size());
+        System.out.println("Number of running goals found: " + runningGoals.size());
         for(RunningGoal rg : runningGoals)
         {
             System.out.println("Running Goal ID:"+rg.getGoalID());
@@ -186,7 +187,8 @@ public class MainActivity extends AppCompatActivity {
         DistSpeedPair testDistSpeed = new DistSpeedPair(new Distance (2, "miles"), new Speed (3, "mph"));
         RunningSession rs1 = new RunningSession(rg1,
                 calendar.getTimeInMillis(), calendar.getTimeInMillis(), dbHelper.getNewRunningSessionID(), testDistSpeed);
-        rg1.addRunningSession(rs1);
+        System.out.println("Current Time:" + (new Date(calendar.getTimeInMillis())));
+                rg1.addRunningSession(rs1);
         dbHelper.addRunningGoal(rg1);
         dbHelper.addRunningGoal(rg2);
         dbHelper.addRunningSession(rs1);

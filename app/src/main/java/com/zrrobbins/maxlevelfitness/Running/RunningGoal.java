@@ -3,6 +3,7 @@ package com.zrrobbins.maxlevelfitness.Running;
 import com.zrrobbins.maxlevelfitness.Abstracts.Goal;
 import com.zrrobbins.maxlevelfitness.Abstracts.GoalType;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -32,12 +33,29 @@ public class RunningGoal extends Goal {
         long retVal = 0;
         for (RunningSession sess: sessions)
         {
+            System.out.println("Calculating distance for goal: "+getGoalID());
             retVal += sess.getDistSpeed().getDistance().getLength();
         }
         return retVal;
     }
 
+    public int getFastestSpeed()
+    {
+        int fastestSpeed = 0;
+        for (RunningSession sess: sessions)
+        {
+            if (sess.getDistSpeed().getSpeed().getValue() > fastestSpeed)
+            {
+                fastestSpeed = sess.getDistSpeed().getSpeed().getValue();
+            }
+        }
+        return fastestSpeed;
+    }
+
     public Speed getSpeed() {return speed; }
 
-
+    public ArrayList<RunningSession> getSessions()
+    {
+        return sessions;
+    }
 }

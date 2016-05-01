@@ -150,7 +150,7 @@ public class SessionDisplay extends Fragment {
 
         sessionStringList = new ArrayList<String>();
         for (RunningSession sess : sessionList) {
-            sessionStringList.add("" + sess.getId());
+            sessionStringList.add("Workout Session " + sess.getId());
         }
 
         groupList = new ArrayList<String>();
@@ -170,10 +170,10 @@ public class SessionDisplay extends Fragment {
         sessionCollection = new LinkedHashMap<String, List<String>>();
 
         for (String sessionName : sessionStringList) {
-            if (sessionName.equals("1")) {
+            if (sessionName.equals("Workout Session 1")) {
                 loadGoalChildInfo(allChildArrays[0]);
             }
-            else if (sessionName.equals("2")) {
+            else if (sessionName.equals("Workout Session 2")) {
                 loadGoalChildInfo(allChildArrays[1]);
             }
             sessionCollection.put(sessionName, sessionChildList);

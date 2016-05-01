@@ -10,5 +10,12 @@
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@android:id/list" />
+        android:id="@android:id/list"
+        android:layout_weight="2" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Update Stats"
+        android:id="@+id/updateButton" />
 </LinearLayout>

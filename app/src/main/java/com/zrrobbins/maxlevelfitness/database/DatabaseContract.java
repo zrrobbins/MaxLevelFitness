@@ -38,16 +38,5 @@ public class DatabaseContract {
             public static final String COLUMN_NAME_SPEED_UNITS = "goalSpeedUnits";
         }
 
-        public static abstract class DistSpeedPairEntry implements BaseColumns
-        {
-            public static final String TABLE_NAME = "DistSpeedPairs";
-            public static final String COLUMN_NAME_PAIR_ID = "pairID";
-            public static final String COLUMN_NAME_PARENT_SESSION_ID = "parentSessionID";
-            public static final String COLUMN_NAME_DISTANCE_LENGTH = "distanceLength";
-            public static final String COLUMN_NAME_DISTANCE_UNITS = "distanceUnits";
-            public static final String COLUMN_NAME_SPEED = "speed";
-            public static final String COLUMN_NAME_START_TIME = "startTime";
-            public static final String COLUMN_NAME_END_TIME = "endTime";
-        }
     }
 }
