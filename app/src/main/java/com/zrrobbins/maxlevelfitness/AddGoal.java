@@ -61,6 +61,7 @@ public class AddGoal extends AppCompatActivity {
         Distance newDist = new Distance(distance, "miles");
         Speed newSpeed = new Speed(speed, "mph");
         RunningGoal newGoal = new RunningGoal(dbHelper.getNewRunningGoalID(), goalType, frequency, newDist, newSpeed);
+        newGoal.setIsActive(true);
         dbHelper.addRunningGoal(newGoal);
         finish();
     }

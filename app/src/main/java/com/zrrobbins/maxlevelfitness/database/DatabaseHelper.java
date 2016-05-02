@@ -37,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String LOG = "DatabaseHelper";
 
     // Database Version
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
 
     // Database Name
     private static final String DATABASE_NAME = "RunningDatabase";
@@ -45,7 +45,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Table Names
     public static final String GOAL_TABLE = DatabaseContract.DatabaseEntry.RunGoalEntry.TABLE_NAME;
     public static final String SESSION_TABLE = DatabaseContract.DatabaseEntry.RunningSessionEntry.TABLE_NAME;
-    public static final String PAIR_TABLE = "DistSpeedPairs";
 
     //GOAL_TABLE Create String
     private static String CREATE_GOAL_TABLE = "create table "
@@ -57,6 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_SPEED_VALUE + " integer not null,"
             + DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_SPEED_UNITS + " text not null,"
             + DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_COMPLETED + " integer not null,"
+            + DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_IS_ACTIVE + " integer not null,"
             + DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_TYPE + " text not null)";
     //SESSION_TABLE Create String
     private static final String SESSION_TABLE_CREATE = "create table "
@@ -88,7 +88,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // on upgrade drop older tables
         db.execSQL("DROP TABLE IF EXISTS " + GOAL_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + SESSION_TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + PAIR_TABLE);
 
         // create new tables
         onCreate(db);
@@ -98,7 +97,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     {
         this.getWritableDatabase().execSQL("DROP TABLE IF EXISTS " + GOAL_TABLE);
         this.getWritableDatabase().execSQL("DROP TABLE IF EXISTS " + SESSION_TABLE);
-        this.getWritableDatabase().execSQL("DROP TABLE IF EXISTS " + PAIR_TABLE);
 
         onCreate(this.getWritableDatabase());
     }
@@ -107,6 +105,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = this.getWritableDatabase();
         int completedState = 0;
+        int isActive = 0;
 
         ContentValues values = new ContentValues();
         values.put(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_DISTANCE_UNITS,
@@ -121,10 +120,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 goal.getSpeed().getUnits());
         values.put(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_TYPE,
                 goal.getGoalType().toString());
+        if (goal.isActive())
+        {
+            isActive = 1;
+        }
         if (goal.isCompleted())
         {
             completedState = 1;
         }
+        values.put(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_IS_ACTIVE,
+                isActive);
         values.put(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_COMPLETED,
                 completedState);
         // insert row
@@ -218,9 +223,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String rgSpeedUnits = c.getString((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_SPEED_UNITS)));
         Speed newSpeed = new Speed(rgSpeedVal, rgSpeedUnits);
 
+        int isActive = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_IS_ACTIVE)));
         int completedState = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_COMPLETED)));
 
         RunningGoal rg = new RunningGoal(rgID, rgType, rgFrequency, newDist, newSpeed);
+        if (isActive > 0)
+        {
+            rg.setIsActive(true);
+        }
         if (completedState > 0)
         {
             rg.setCompleted(true);
@@ -290,9 +300,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 String rgSpeedUnits = c.getString((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_GOAL_SPEED_UNITS)));
                 Speed newSpeed = new Speed(rgSpeedVal, rgSpeedUnits);
 
+                int isActive = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_IS_ACTIVE)));
                 int completedState = c.getInt((c.getColumnIndex(DatabaseContract.DatabaseEntry.RunGoalEntry.COLUMN_NAME_COMPLETED)));
 
                 RunningGoal rg = new RunningGoal(rgID, rgType, rgFrequency, newDist, newSpeed);
+                if (isActive > 0)
+                {
+                    rg.setIsActive(true);
+                }
                 if (completedState > 0)
                 {
                     rg.setCompleted(true);

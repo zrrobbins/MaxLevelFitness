@@ -15,10 +15,21 @@ public class RunningGoal extends Goal {
     private Speed speed;
     private ArrayList<RunningSession> sessions = new ArrayList<RunningSession>();
 
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    private boolean isActive;
+
     public RunningGoal(int goalID, GoalType goalType, int frequency, Distance distance, Speed speed) {
         super(goalID, goalType, frequency);
         this.distance = distance;
         this.speed = speed;
+        this.isActive = false;
     }
 
     public void addRunningSession(RunningSession sess)
