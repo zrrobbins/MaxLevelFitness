@@ -79,7 +79,7 @@
             android:layout_height="wrap_content"
             android:inputType="number"
             android:ems="10"
-            android:id="@+id/editText2"
+            android:id="@+id/distanceVal"
             android:layout_weight="1" />
 
         <TextView
@@ -112,7 +112,7 @@
             android:layout_height="wrap_content"
             android:inputType="number"
             android:ems="10"
-            android:id="@+id/editText"
+            android:id="@+id/speedVal"
             android:layout_weight="1" />
 
         <TextView
@@ -136,6 +136,7 @@
         android:layout_height="wrap_content"
         android:text="Add Goal"
         android:id="@+id/addButton"
-        android:layout_gravity="center_horizontal|bottom" />
+        android:layout_gravity="center_horizontal|bottom"
+        android:onClick="addGoal" />
 
 </LinearLayout>
