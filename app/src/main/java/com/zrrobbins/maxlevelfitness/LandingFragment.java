@@ -1,8 +1,10 @@
 package com.zrrobbins.maxlevelfitness;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,7 +83,7 @@ public class LandingFragment extends Fragment {
 
         createGroupList();
         createCollection();
-        dbHelper = new DatabaseHelper(this.getContext());
+        dbHelper = DatabaseHelper.getInstance(getContext());
         for (RunningGoal goal:goalList)
         {
             dbHelper.addRunningGoal(goal);
@@ -122,6 +124,15 @@ public class LandingFragment extends Fragment {
                         .show();
 
                 return true;
+            }
+        });
+
+        FloatingActionButton FAB = (FloatingActionButton)inflated.findViewById(R.id.addNewGoal);
+        FAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity() ,AddGoal.class);
+                startActivity(i);
             }
         });
         return inflated;

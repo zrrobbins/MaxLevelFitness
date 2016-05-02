@@ -16,28 +16,32 @@
         android:layout_height="wrap_content">
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="TestDB"
             android:id="@+id/button"
             android:layout_gravity="center"
-            android:onClick="testDB" />
+            android:onClick="testDB"
+            android:layout_weight="1" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="clearDB"
             android:id="@+id/clearDB"
-            android:onClick="clearDB" />
+            android:onClick="clearDB"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="addStuff"
             android:id="@+id/addStuffButton"
-            android:layout_marginLeft="50dp"
+            android:layout_marginLeft="0dp"
             android:onClick="addGoalsAndSessions"
-            android:nestedScrollingEnabled="false" />
+            android:nestedScrollingEnabled="false"
+            android:layout_weight="1" />
     </LinearLayout>
 
     <android.support.design.widget.TabLayout

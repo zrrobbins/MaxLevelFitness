@@ -46,14 +46,14 @@ public class MainActivity extends AppCompatActivity {
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
         mPager.setCurrentItem(2);
-        mPager.setOffscreenPageLimit(0);
+        mPager.setOffscreenPageLimit(3);
 
         //Attach tablayout to view pager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(mPager);
 
         //Instantiate dbHelper
-        dbHelper = new DatabaseHelper(this.getApplicationContext());
+        dbHelper = DatabaseHelper.getInstance(getApplicationContext());
     }
 
     @Override

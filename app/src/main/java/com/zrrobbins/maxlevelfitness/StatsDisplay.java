@@ -34,7 +34,7 @@ public class StatsDisplay extends ListFragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    ArrayAdapter<String> adapter;
+    private static ArrayAdapter<String> adapter;
     ArrayList<String> listItems=new ArrayList<String>();
 
     // TODO: Rename and change types of parameters
@@ -158,7 +158,7 @@ public class StatsDisplay extends ListFragment {
     public void calculateStats()
     {
         clearItemList();
-        DatabaseHelper dbHelper = new DatabaseHelper(this.getContext());
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(getContext());
         //Get number completed goals
         List<RunningGoal> allGoals = dbHelper.retrieveAllRunningGoals();
 

@@ -91,7 +91,7 @@ public class SessionDisplay extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dbHelper = new DatabaseHelper(this.getContext());
+        dbHelper = DatabaseHelper.getInstance(getContext());
         createGroupList();
         createCollection();
     }

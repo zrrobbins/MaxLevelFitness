@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="goal_types">
+        <item>Running</item>
+    </string-array>
+    <string-array name="frequency_vals">
+        <item>1 day/week</item>
+        <item>2 days/week</item>
+        <item>3 days/week</item>
+        <item>4 days/week</item>
+        <item>5 days/week</item>
+        <item>6 days/week</item>
+        <item>7 days/week</item>
+    </string-array>
+
+</resources>
