@@ -1,6 +1,10 @@
 package com.zrrobbins.maxlevelfitness;
 
+import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -26,7 +30,9 @@ import com.zrrobbins.maxlevelfitness.database.DatabaseHelper;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,6 +57,19 @@ public class MainActivity extends AppCompatActivity {
         //Attach tablayout to view pager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(mPager);
+
+        // Initialize location tracking
+        MyLocationListener locationListener = new MyLocationListener();
+        LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        try {
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);;
+        } catch (Exception e) {
+            System.err.println("ERROR in requesting location updates in Main Activity: " + e.getMessage());
+            e.printStackTrace();
+        }
+        locationListener.updateSpeed(null);
+
+        //
 
         //Instantiate dbHelper
         dbHelper = DatabaseHelper.getInstance(getApplicationContext());
@@ -160,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
         dbHelper.addRunningGoal(testGoal);
         List<RunningGoal> runningGoals = dbHelper.retrieveAllRunningGoals();
         System.out.println("Added goal with id: "+newID);
-        System.out.println("Number of running goals found: " + runningGoals.size());
+        System.out.println("Number of running goals found: "+runningGoals.size());
         for(RunningGoal rg : runningGoals)
         {
             System.out.println("Running Goal ID:"+rg.getGoalID());
@@ -195,4 +214,65 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+    /*
+
+
+    Methods below are used for speed tracking via location.
+
+
+     */
+
+    /**
+     * Created by zrrobbins on 4/30/16.
+     */
+    public class MyLocationListener implements LocationListener {
+
+        public void updateSpeed(Location location) {
+            // TODO Auto-generated method stub
+            float nCurrentSpeed = 0;
+
+            if(location != null)
+            {
+                nCurrentSpeed = location.getSpeed();
+            }
+
+            Formatter fmt = new Formatter(new StringBuilder());
+            fmt.format(Locale.US, "%5.1f", nCurrentSpeed);
+            String strCurrentSpeed = fmt.toString();
+            strCurrentSpeed = strCurrentSpeed.replace(' ', '0');
+
+            String strUnits = "miles/hour";
+            System.out.println("-------------------in UpdateSpeed()");
+            if (newGoalSessionFrame != null && newGoalSessionFrame.isGoalBeingTracked()) { //TODO: Implement this later:  && newGoalSessionFrame.getGoalBeingTracked() instanceof RunningGoal) {
+                newGoalSessionFrame.updateRunningSpeed(strCurrentSpeed, strUnits);
+            }
+        }
+
+
+        @Override
+        public void onLocationChanged(Location location) {
+            if(location != null) {
+                this.updateSpeed(location);
+            }
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            // TODO Auto-generated method stub
+
+        }
+    }
 }

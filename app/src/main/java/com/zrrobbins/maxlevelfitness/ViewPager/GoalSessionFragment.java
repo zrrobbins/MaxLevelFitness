@@ -1,5 +1,7 @@
 package com.zrrobbins.maxlevelfitness.ViewPager;
 
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
@@ -7,9 +9,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.zrrobbins.maxlevelfitness.Abstracts.Goal;
+import com.zrrobbins.maxlevelfitness.Abstracts.WorkoutSession;
+import com.zrrobbins.maxlevelfitness.AddGoal;
 import com.zrrobbins.maxlevelfitness.R;
 
 
@@ -21,10 +26,15 @@ public class GoalSessionFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    // The current goal session we are tracking
+    WorkoutSession currentSession;
+    Boolean goalBeingTracked = false;
+
+    TextView isGoalBeingTrackedView;
     TextView goalIdView;
     TextView goalTypeView;
     TextView goalFrequencyView;
-    TextView goalNameView;
+    TextView userSpeedView;
 
     public GoalSessionFragment() {
         // Required empty public constructor
@@ -65,10 +75,20 @@ public class GoalSessionFragment extends Fragment {
 
         View inflated =  inflater.inflate(R.layout.goal_session_fragment, container, false);
         final View inflatedCopy = inflated;
-        //goalNameView = (TextView) inflated.findViewById(R.id.nameOfGoalBeingTracked);
+
+        isGoalBeingTrackedView = (TextView) inflated.findViewById(R.id.isGoalBeingTracked);
         goalIdView = (TextView) inflated.findViewById(R.id.goalID);
         goalTypeView = (TextView) inflated.findViewById(R.id.goalType);
         goalFrequencyView = (TextView) inflated.findViewById(R.id.goalFrequency);
+        userSpeedView = (TextView) inflated.findViewById(R.id.userSpeed);
+
+        Button stopSessionButton = (Button)inflated.findViewById(R.id.stopSessionButton);
+        stopSessionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopSession();
+            }
+        });
 
         return inflated;
     }
@@ -84,9 +104,25 @@ public class GoalSessionFragment extends Fragment {
     }
 
     public void updateGoalSessionInfo(Goal goal) {
+        goalBeingTracked = true;
+        isGoalBeingTrackedView.setText(("A goal is being tracked!"));
         goalIdView.setText("" + goal.getGoalID());
         goalTypeView.setText("" + goal.getGoalType().toString());
         goalFrequencyView.setText("" + goal.getGoalFrequency());
+    }
+
+    public void updateRunningSpeed(String speed, String units) {
+        System.out.println("-------------------Updating running speed with" + speed + " " + units);
+        userSpeedView.setText(speed + " " + units);
+    }
+
+    public void stopSession() {
+        goalBeingTracked = false;
+        isGoalBeingTrackedView.setText(("A goal is NOT being tracked currently."));
+        goalIdView.setText("");
+        goalTypeView.setText("");
+        goalFrequencyView.setText("");
+        userSpeedView.setText("No goal being tracked");
     }
 
 
@@ -102,6 +138,10 @@ public class GoalSessionFragment extends Fragment {
         final float scale = getResources().getDisplayMetrics().density;
         // Convert the dps to pixels, based on density scale
         return (int) (pixels * scale + 0.5f);
+    }
+
+    public boolean isGoalBeingTracked() {
+        return goalBeingTracked;
     }
 
     /**
