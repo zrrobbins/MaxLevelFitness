@@ -69,8 +69,6 @@ public class MainActivity extends AppCompatActivity {
         }
         locationListener.updateSpeed(null);
 
-        //
-
         //Instantiate dbHelper
         dbHelper = DatabaseHelper.getInstance(getApplicationContext());
     }
@@ -173,21 +171,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void testDB(View v)
-    {
-        Distance testDist = new Distance(35, "meters");
-        Speed testSpeed = new Speed(3, "m/s");
-        int newID = dbHelper.getNewRunningGoalID();
-        RunningGoal testGoal = new RunningGoal(newID, GoalType.RUNNING, 5, testDist, testSpeed);
-        dbHelper.addRunningGoal(testGoal);
-        List<RunningGoal> runningGoals = dbHelper.retrieveAllRunningGoals();
-        System.out.println("Added goal with id: "+newID);
-        System.out.println("Number of running goals found: "+runningGoals.size());
-        for(RunningGoal rg : runningGoals)
-        {
-            System.out.println("Running Goal ID:"+rg.getGoalID());
-        }
-    }
 
     public void clearDB(View v)
     {
@@ -199,32 +182,6 @@ public class MainActivity extends AppCompatActivity {
         newGoalSessionFrame.updateGoalSessionInfo(goal);
     }
 
-    public void addGoalsAndSessions(View v)
-    {
-        Calendar calendar = Calendar.getInstance();
-        RunningGoal rg1 = new RunningGoal(dbHelper.getNewRunningGoalID(),
-                GoalType.RUNNING, 5 , new Distance(4, "miles"), new Speed(6, "mph"));
-        RunningGoal rg2 = new RunningGoal(dbHelper.getNewRunningGoalID(),
-                GoalType.RUNNING, 3, new Distance(8, "miles"), new Speed(4, "mph"));
-        DistSpeedPair testDistSpeed = new DistSpeedPair(new Distance (2, "miles"), new Speed (3, "mph"));
-        RunningSession rs1 = new RunningSession(rg1,
-                calendar.getTimeInMillis(), calendar.getTimeInMillis(), dbHelper.getNewRunningSessionID(), testDistSpeed);
-        System.out.println("Current Time:" + (new Date(calendar.getTimeInMillis())));
-                rg1.addRunningSession(rs1);
-        dbHelper.addRunningGoal(rg1);
-        dbHelper.addRunningGoal(rg2);
-        dbHelper.addRunningSession(rs1);
-    }
-
-
-
-    /*
-
-
-    Methods below are used for speed tracking via location.
-
-
-     */
 
     /**
      * Created by zrrobbins on 4/30/16.
@@ -238,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
             if(location != null)
             {
                 nCurrentSpeed = location.getSpeed();
+                System.out.println("-------------------nCurrentSpeed: " + nCurrentSpeed);
             }
 
             Formatter fmt = new Formatter(new StringBuilder());
