@@ -135,6 +135,9 @@ public class MainActivity extends AppCompatActivity {
                 case 3:
                     StatsDisplay statsDisplay = StatsDisplay.create(3);
                     return statsDisplay;
+                case 4:
+                    LeaderboardDisplay leaderDisplay = LeaderboardDisplay.create(4);
+                    return leaderDisplay;
                 default:
                     return new ScreenSlidePageFragment();
             }

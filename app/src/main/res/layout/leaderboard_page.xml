@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.67">
+        android:layout_height="wrap_content"
+        android:dividerPadding="5dp">
 
         <TableRow
             android:layout_width="match_parent"
@@ -58,7 +63,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="mm/dd/yy"
+                        android:text="04/20/16"
                         android:id="@+id/textView5"
                         android:layout_marginLeft="8dp" />
 
@@ -83,7 +88,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="####"
+                        android:text="5"
                         android:id="@+id/textView6"
                         android:layout_marginLeft="8dp" />
                 </LinearLayout>
@@ -115,28 +120,28 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_verified_user_blue_grey_600_18dp"
+                    android:src="@drawable/ic_favorite_blue_grey_600_18dp"
                     android:id="@+id/imageView3"
                     android:minHeight="55dp"
                     android:minWidth="55dp" />
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_verified_user_blue_grey_600_18dp"
+                    android:src="@drawable/ic_stars_blue_grey_600_18dp"
                     android:id="@+id/imageView4"
                     android:minHeight="55dp"
                     android:minWidth="55dp" />
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_verified_user_blue_grey_600_18dp"
+                    android:src="@drawable/ic_trending_up_blue_grey_600_18dp"
                     android:id="@+id/imageView5"
                     android:minHeight="55dp"
                     android:minWidth="55dp" />
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_verified_user_blue_grey_600_18dp"
+                    android:src="@drawable/ic_thumb_up_blue_grey_600_18dp"
                     android:id="@+id/imageView6"
                     android:minHeight="55dp"
                     android:minWidth="55dp" />
@@ -157,35 +162,35 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_verified_user_blue_grey_600_18dp"
+                    android:src="@drawable/ic_forward_10_blue_grey_600_18dp"
                     android:id="@+id/imageView7"
                     android:minHeight="55dp"
                     android:minWidth="55dp" />
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_verified_user_blue_grey_600_18dp"
+                    android:src="@drawable/ic_tag_faces_blue_grey_600_18dp"
                     android:id="@+id/imageView8"
                     android:minHeight="55dp"
                     android:minWidth="55dp" />
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_verified_user_blue_grey_600_18dp"
+                    android:src="@drawable/ic_flash_on_blue_grey_600_18dp"
                     android:id="@+id/imageView9"
                     android:minHeight="55dp"
                     android:minWidth="55dp" />
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_verified_user_blue_grey_600_18dp"
+                    android:src="@drawable/ic_directions_bike_blue_grey_600_18dp"
                     android:id="@+id/imageView10"
                     android:minHeight="55dp"
                     android:minWidth="55dp" />
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_verified_user_blue_grey_600_18dp"
+                    android:src="@drawable/ic_directions_run_blue_grey_600_18dp"
                     android:id="@+id/imageView11"
                     android:minHeight="55dp"
                     android:minWidth="55dp" />
@@ -210,9 +215,175 @@
         </TableRow>
 
 
+    <!--single friend item for leaderboard -->
 
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:paddingBottom="10dp">
 
-    </TableLayout>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView12"
+                android:src="@drawable/ic_account_circle_blue_400_18dp"
+                android:layout_column="0"
+                android:minHeight="45dp" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="CardioManiac"
+                    android:id="@+id/textView13" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Stars: 15"
+                        android:id="@+id/textView14"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Top badge: "
+                        android:paddingLeft="10dp"
+                        android:id="@+id/textView15"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_directions_run_blue_grey_600_18dp"
+                        android:id="@+id/imageView16"/>
+                </LinearLayout>
+            </LinearLayout>
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:paddingBottom="10dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView17"
+                android:src="@drawable/ic_account_circle_blue_400_18dp"
+                android:layout_column="0"
+                android:minHeight="45dp" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="GetYolked"
+                    android:id="@+id/textView18" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Stars: 10"
+                        android:id="@+id/textView19"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Top badge: "
+                        android:paddingLeft="10dp"
+                        android:id="@+id/textView20"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_forward_10_blue_grey_600_18dp"
+                        android:id="@+id/imageView21"/>
+                </LinearLayout>
+            </LinearLayout>
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:paddingBottom="10dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView22"
+                android:src="@drawable/ic_account_circle_blue_400_18dp"
+                android:layout_column="0"
+                android:minHeight="45dp" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="SwoleSir"
+                    android:id="@+id/textView23" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Stars: 8"
+                        android:id="@+id/textView24"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Top badge: "
+                        android:paddingLeft="10dp"
+                        android:id="@+id/textView25"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_trending_up_blue_grey_600_18dp"
+                        android:id="@+id/imageView26"/>
+                </LinearLayout>
+            </LinearLayout>
+
+        </TableRow>
+
+  </TableLayout>
 
 
 </LinearLayout>
+</ScrollView>
