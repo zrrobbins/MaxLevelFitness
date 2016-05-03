@@ -5,8 +5,6 @@
     tools:context="com.zrrobbins.maxlevelfitness.StatsDisplay"
     android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

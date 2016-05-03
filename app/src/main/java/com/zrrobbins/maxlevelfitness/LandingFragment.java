@@ -11,15 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.zrrobbins.maxlevelfitness.Abstracts.Goal;
 import com.zrrobbins.maxlevelfitness.Abstracts.GoalType;
 import com.zrrobbins.maxlevelfitness.Running.Distance;
 import com.zrrobbins.maxlevelfitness.Running.RunningGoal;
 import com.zrrobbins.maxlevelfitness.Running.Speed;
-import com.zrrobbins.maxlevelfitness.ViewPager.GoalSessionFragment;
 import com.zrrobbins.maxlevelfitness.database.DatabaseHelper;
 
 import java.util.ArrayList;

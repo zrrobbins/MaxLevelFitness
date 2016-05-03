@@ -1,27 +1,16 @@
 package com.zrrobbins.maxlevelfitness;
 
-import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import com.zrrobbins.maxlevelfitness.Abstracts.Goal;
-import com.zrrobbins.maxlevelfitness.Abstracts.GoalType;
-import com.zrrobbins.maxlevelfitness.Running.Distance;
-import com.zrrobbins.maxlevelfitness.Running.RunningGoal;
 import com.zrrobbins.maxlevelfitness.Running.RunningSession;
-import com.zrrobbins.maxlevelfitness.Running.Speed;
 import com.zrrobbins.maxlevelfitness.database.DatabaseHelper;
 
 import java.util.ArrayList;
@@ -52,26 +41,6 @@ public class SessionDisplay extends Fragment {
     List<String> sessionStringList;
     List<String> sessionChildList;
     Map<String, List<String>> sessionCollection;
-    //ArrayList<HashMap<String,String>> sessionList;
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param //param1 Parameter 1.
-     * @param //param2 Parameter 2.
-     * @return A new instance of fragment SessionDisplay.
-
-    // TODO: Rename and change types and number of parameters
-    public static SessionDisplay newInstance(String param1, String param2) {
-        SessionDisplay fragment = new SessionDisplay();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-*/
 
     public static SessionDisplay create(int pageNumber)
     {
@@ -102,8 +71,6 @@ public class SessionDisplay extends Fragment {
         View inflated =  inflater.inflate(R.layout.fragment_goal_search, container, false);
         final View inflatedCopy = inflated;
         expListView = (ExpandableListView) inflated.findViewById(R.id.laptop_list);
-        //final ExpandableListAdapter expListAdapter = new CustomExpandableAdapter(
-        //        this.getActivity(), groupList, laptopCollection);
         final ExpandableListAdapter expListAdapter = new CustomExpandableAdapter(
                 this.getActivity(), sessionStringList, sessionCollection);
         expListView.setAdapter(expListAdapter);
@@ -142,11 +109,6 @@ public class SessionDisplay extends Fragment {
         sessionList = dbHelper.retrieveAllRunningSessions();
 
         List<RunningSession> allSessions = dbHelper.retrieveAllRunningSessions();
-        for (RunningSession sess: allSessions)
-        {
-
-        }
-
 
         sessionStringList = new ArrayList<String>();
         for (RunningSession sess : sessionList) {

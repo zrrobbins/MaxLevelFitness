@@ -18,20 +18,11 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.zrrobbins.maxlevelfitness.Abstracts.Goal;
-import com.zrrobbins.maxlevelfitness.Abstracts.GoalType;
-import com.zrrobbins.maxlevelfitness.Running.DistSpeedPair;
-import com.zrrobbins.maxlevelfitness.Running.Distance;
-import com.zrrobbins.maxlevelfitness.Running.RunningGoal;
-import com.zrrobbins.maxlevelfitness.Running.RunningSession;
-import com.zrrobbins.maxlevelfitness.Running.Speed;
 import com.zrrobbins.maxlevelfitness.ViewPager.GoalSessionFragment;
 import com.zrrobbins.maxlevelfitness.ViewPager.ScreenSlidePageFragment;
 import com.zrrobbins.maxlevelfitness.database.DatabaseHelper;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Formatter;
-import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -62,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         MyLocationListener locationListener = new MyLocationListener();
         LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         try {
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);;
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
         } catch (Exception e) {
             System.err.println("ERROR in requesting location updates in Main Activity: " + e.getMessage());
             e.printStackTrace();
@@ -189,13 +180,11 @@ public class MainActivity extends AppCompatActivity {
     public class MyLocationListener implements LocationListener {
 
         public void updateSpeed(Location location) {
-            // TODO Auto-generated method stub
             float nCurrentSpeed = 0;
 
             if(location != null)
             {
                 nCurrentSpeed = location.getSpeed();
-                System.out.println("-------------------nCurrentSpeed: " + nCurrentSpeed);
             }
 
             Formatter fmt = new Formatter(new StringBuilder());
@@ -204,8 +193,7 @@ public class MainActivity extends AppCompatActivity {
             strCurrentSpeed = strCurrentSpeed.replace(' ', '0');
 
             String strUnits = "miles/hour";
-            System.out.println("-------------------in UpdateSpeed()");
-            if (newGoalSessionFrame != null && newGoalSessionFrame.isGoalBeingTracked()) { //TODO: Implement this later:  && newGoalSessionFrame.getGoalBeingTracked() instanceof RunningGoal) {
+            if (newGoalSessionFrame != null && newGoalSessionFrame.isGoalBeingTracked()) {
                 newGoalSessionFrame.updateRunningSpeed(strCurrentSpeed, strUnits);
             }
         }

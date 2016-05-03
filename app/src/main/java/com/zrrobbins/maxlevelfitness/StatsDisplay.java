@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 
 import com.zrrobbins.maxlevelfitness.Running.RunningGoal;
-import com.zrrobbins.maxlevelfitness.Running.RunningSession;
 import com.zrrobbins.maxlevelfitness.database.DatabaseHelper;
 
 import java.util.ArrayList;
